@@ -1,0 +1,29 @@
+# CubeMX generator
+.cproject
+.mxproject
+.project
+.settings
+Debug/
+Release/
+
+# Makefile build specific
+build/
+
+# Object files and binaries
+*.o
+*.elf
+*.bin
+*.hex
+*.map
+*.lst
+*.su
+
+# Editor/IDE specific
+.vscode/
+.cache/
+compile_commands.json
+*.swp
+
+# OS generated files
+.DS_Store
+Thumbs.db
