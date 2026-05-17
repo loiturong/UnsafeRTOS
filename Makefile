@@ -7,14 +7,20 @@ SZ      := $(PREFIX)size
 
 # Build Directory
 BDIR	:= build
+RDIR	:= $(BDIR)/release
+DDIR	:= $(BDIR)/debug
 
-# Target
+
+#################################
+#		TARGET SPECIFIC			#
+#################################
+
+# Target Name
 TAR		:= rtos
 # Alias for STM family
 ALIAS	:= STM32F4xx
 # BOARD
 BOARD	:= STM32F411xE
-
 # MCU Flags
 CPU     := -mcpu=cortex-m4
 # FPU
@@ -24,9 +30,13 @@ FLOAT-ABI = -mfloat-abi=hard
 # MCU
 MCU		:= $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 
+
+#################################
+#		TOOLCHAIN FLAG			#
+#################################
+
 # C Defines
 C_DEFS  := -D$(BOARD) -DUSE_HAL_DRIVER
-
 # C Includes
 C_INCLUDES := \
 -ICore/Inc \
@@ -37,60 +47,95 @@ C_INCLUDES := \
 
 # Compile Flags
 CFLAGS  := $(MCU) $(C_DEFS) $(C_INCLUDES) \
-		   -Og -Wall -fdata-sections -ffunction-sections \
-		   -g -gdwarf-2 -std=gnu11 -fno-common -fmessage-length=0 \
+		   -Wall -Wconversion -Wcast-qual \
+		   -fdata-sections -ffunction-sections \
+		   -std=gnu11 -fno-common -fmessage-length=0 \
 		   -MMD -MP
-
+RFLAGS	:= -O2
+DFLAGS	:= -Og -g3 -ggdb -gdwarf-2
 # libraries
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
+# Linker Flags
+LDSCRIPT := STM32F411XX_FLASH.ld
+LDFLAGS  := $(MCU) -specs=nano.specs -T$(LDSCRIPT) \
+			$(LIBDIR) $(LIBS)
+
+RMAP	:= -Wl,-Map=$(RDIR)/$(TAR).map -Wl,--gc-section -Wl,--print-memory-usage
+DMAP	:= -Wl,-Map=$(DDIR)/$(TAR).map -Wl,--gc-section -Wl,--print-memory-usage
+
+
+#################################
+#		SOURCE AND TARGET		#
+#################################
 
 # Sources file
 SOURCES_C := $(wildcard Core/Src/*.c) \
 			 $(wildcard Drivers/$(ALIAS)_HAL_Driver/Src/*.c)
-
-SOURCES_S := $(wildcard Core/Startup/*.s) \
-			 $(wildcard *.s)
+SOURCES_S := $(wildcard *.s) \
+			 $(wildcard Core/Startup/*.s)
 
 # Object file
-OBJS := $(patsubst %.c, $(BDIR)/%.o, $(SOURCES_C)) \
-		$(patsubst %.s, $(BDIR)/%.o, $(SOURCES_S))
+ROBJS 	:= $(patsubst %.c, $(RDIR)/%.o, $(SOURCES_C)) \
+		   $(patsubst %.s, $(RDIR)/%.o, $(SOURCES_S))
+DOBJS 	:= $(patsubst %.c, $(DDIR)/%.o, $(SOURCES_C)) \
+		   $(patsubst %.s, $(DDIR)/%.o, $(SOURCES_S))
 
-# Linker Flags
-LDSCRIPT := STM32F411XX_FLASH.ld
-LDFLAGS  := $(MCU) -specs=nano.specs -T$(LDSCRIPT) \
-			$(LIBDIR) $(LIBS) \
-			-Wl,-Map=$(BDIR)/output.map -Wl,--gc-sections \
-			-Wl,--print-memory-usage 
+#################################
+#			BUILD RULES			#
+#################################
 
-.PHONY: all clean flash debug
+.PHONY: all clean release debug openocd gdb
+.PHONY: flash-release flash-debug
+.PHONY: Makefile
 
-all: $(BDIR)/$(TAR).bin $(BDIR)/$(TAR).elf
-	$(SZ) $(BDIR)/$(TAR).elf
-	
-debug: C_DEFS += -DDEBUG
-debug: all
-
-$(BDIR)/$(TAR).elf: $(OBJS)
-	$(CC) $(OBJS) $(LDFLAGS) -o $@
-
-$(BDIR)/%.bin: $(BDIR)/%.elf
-	$(CP) -O binary -S $< $@
-
-$(BDIR)/%.o: %.c
-	@echo "Compiling $<"
-	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(BDIR)/%.o: %.s
-	@echo "Assembling $<"
-	@mkdir -p $(dir $@)
-	$(AS) -c $< -o $@
+all: release
 
 clean:
 	rm -rf $(BDIR)
 
-flash: all
-	st-flash write $(BDIR)/$(TAR).bin 0x8000000
+release: $(ROBJS)
+	$(CC) $(ROBJS) $(LDFLAGS) $(RMAP) -o $(RDIR)/$(TAR).elf
+	$(CP) -O binary -S $(RDIR)/$(TAR).elf $(RDIR)/$(TAR).bin
+	$(SZ) $(RDIR)/$(TAR).elf
 
--include $(OBJS:.o=.d)
+debug: C_DEFS += -DDEBUG
+debug: $(DOBJS)
+	$(CC) $(DOBJS) $(LDFLAGS) $(DMAP) -o $(DDIR)/$(TAR).elf
+	$(CP) -O binary -S $(DDIR)/$(TAR).elf $(DDIR)/$(TAR).bin
+	$(SZ) $(DDIR)/$(TAR).elf
+
+openocd:
+	openocd -f interface/stlink.cfg -f target/stm32f4x.cfg
+
+gdb:
+	arm-none-eabi-gdb $(DDIR)/$(TAR).elf
+
+flash-release:
+	st-flash write $(RDIR)/$(TAR).bin 0x08000000
+
+flash-debug:
+	st-flash write $(DDIR)/$(TAR).bin 0x08000000
+
+$(RDIR)/%.o: %.c
+	@echo "Compiling $<"
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(RFLAGS) -c $< -o $@
+
+$(RDIR)/%.o: %.s
+	@echo "Assembling $<"
+	@mkdir -p $(dir $@)
+	$(AS) $(CFLAGS) $(RFLAGS) -c $< -o $@
+
+$(DDIR)/%.o: %.c
+	@echo "Compiling $<"
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(DFLAGS) -c $< -o $@
+
+$(DDIR)/%.o: %.s
+	@echo "Assembling $<"
+	@mkdir -p $(dir $@)
+	$(AS) $(CFLAGS) $(DFLAGS) -c $< -o $@
+
+-include $(ROBJS:.o=.d)
+-include $(DOBJS:.o=.d)
