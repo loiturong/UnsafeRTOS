@@ -106,7 +106,7 @@ debug: $(DOBJS)
 	$(SZ) $(DDIR)/$(TAR).elf
 
 openocd:
-	openocd -f interface/stlink.cfg -f target/stm32f4x.cfg
+	openocd -f openocd.cfg
 
 gdb:
 	arm-none-eabi-gdb $(DDIR)/$(TAR).elf
