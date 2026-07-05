@@ -1,58 +1,17 @@
-# UnSafeRTOS
+# UnsafeRTOS
 
-## Current Target
+A minimal preemptive RTOS built from the register level on STM32F4,
+with no HAL/CubeMX abstraction.
 
-### Target Family
-This OS targets STM32 microcontrollers, built on top of STM32Cube HAL.
+## Goal
+Understand how an RTOS actually works — scheduler, context switching,
+interrupts — not just get one running via driver layer.
 
-### Primary Development Board
+## Hardware
+[STM32F411CEU6 minimal board - "black pill"]
 
-* STM32F411CEU6 (Black Pill)
-
-### MCU Family Focus
-
-* STM32 family (primarily Cortex-M based MCUs)
-
-The project is currently designed around STM32 devices and CubeMX HAL integration.
-Future portability to other STM32 series — and potentially non-ST ARM Cortex-M boards — is possible, but multi-target support is not yet implemented.
-
-## Philosophy
-
-UnsafeRTOS is a learning-focused RTOS project inspired by FreeRTOS and general real-time operating system design philosophy.
-
-This project attempts to reimplement and study many of the core concepts commonly found in modern RTOS designs, including:
-
-* Deterministic scheduling
-* Context switching
-* Task synchronization
-* Timing guarantees
-* Critical section management
-* Priority-based execution
-* Interrupt-aware kernel behavior
-
-Core principles:
-
-* Readability and Optimization only when possible
-* Educational value
-* Incremental and experimental development
-* Minimal dependencies
-* Learning through implementation
-
-## Toolchain
-
-### Environment
-
-* STM32CubeMX
-* ARM GCC Toolchain
-* OpenOCD
-* GDB
-* VSCode / Nvim
-
-### Build System
-
-CubeMX-generated projects with HAL integration.
-
-The project is compiled and built using Makefile script.
+## Status: Learning
+Start discorver ARM Infrastructure.
 
 ## License
 

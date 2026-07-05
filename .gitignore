@@ -1,12 +1,4 @@
-# CubeMX generator
-.cproject
-.mxproject
-.project
-.settings
-Debug/
-Release/
-
-# Makefile build specific
+# Makefile build target
 build/
 
 # Object files and binaries
@@ -27,3 +19,20 @@ compile_commands.json
 # OS generated files
 .DS_Store
 Thumbs.db
+Desktop.ini
+
+# Markdown document template
+*.md.tmp
+
+# Debug tool
+.gdbinit
+openocd.cfg
+
+# CMSIS from ARM
+CMSIS/Include/*
+
+# Exclude CMSIS for the Board
+!CMSIS/Include/cmsis_version.h
+!CMSIS/Include/cmsis_compiler.h
+!CMSIS/Include/mpu_armv7.h
+!CMSIS/Include/core_cm4.h
