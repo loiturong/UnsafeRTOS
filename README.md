@@ -4,14 +4,29 @@ A minimal preemptive RTOS built from the register level on STM32F4,
 with no HAL/CubeMX abstraction.
 
 ## Goal
+
 Understand how an RTOS actually works — scheduler, context switching,
 interrupts — not just get one running via driver layer.
 
-## Hardware
-[STM32F411CEU6 minimal board - "black pill"]
+## Memory Layout
 
-## Status: Learning
-Start discorver ARM Infrastructure.
+Memory Layout is design according to datasheet, with FLASH start at `0x08000000` and 
+RAM start at `0x20000000`. The table below is show in a reverse order.
+
+| Region | Detail | Placement |
+|---|---|---|
+| 0x08000000 | Start of Flash | Firmware |
+| 0x20000000 | Start of RAM | static data, bss region |
+| - | after data region | user heap |
+| - | remaining space | heap grows up, stack grows down |
+| 0x2001F000 | - | User stack top |
+| 0x2001F000 | - | System stack bottom |
+| 0x20020000 | End of RAM | System stack top |
+
+## Status
+
+Board bring-up phase
+Tested on emulation
 
 ## License
 
