@@ -19,4 +19,6 @@ reset_handler:
 .int_table:
 	.word reset_handler
 	/* Other added latter */
-	.skip 4 * (256 - 1)
+	.rept 255
+	.word reset_handler
+	.endr
