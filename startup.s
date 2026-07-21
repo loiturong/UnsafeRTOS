@@ -11,8 +11,9 @@ reset_handler:
 	bl init_data
 
 	bl kernel_main
+/* literal pool */
+	.balign 4
 .main_literal_pool:
-	/* literal pool */
 	.ltorg
 
 /*
@@ -55,8 +56,10 @@ init_data:
 .ret:
 	pop {r4, r5, r6, r7}
 	mov pc, lr
+	
+/* literal pool */
+	.balign 4
 .data_bss_literal_pool:
-	/* literal pool */
 	.ltorg
 
 .section .hardware_startup
