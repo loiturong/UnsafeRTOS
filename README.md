@@ -8,6 +8,13 @@ with no HAL/CubeMX abstraction.
 Understand how an RTOS actually works — scheduler, context switching,
 interrupts — not just get one running via driver layer.
 
+## Programming References
+
+- RM0383 Reference manual - STM32F411xC/E advanced Arm®-based 32-bit MCUs
+- STM32F411xC STM32F411xE - Datasheet
+- Arm® Cortex®-M4 Processor - Technical Reference Manual Revision: r0p1
+- Arm® v7-M Architecture - Reference Manual
+
 ## Memory Layout
 
 Memory Layout is design according to datasheet, with FLASH start at `0x08000000` and 
