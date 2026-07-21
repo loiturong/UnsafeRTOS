@@ -76,6 +76,8 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 	-fno-pic -fno-pie
 	-ffreestanding -fno-builtin 
 	-fno-strict-aliasing -fno-stack-protector
+	# No unaligned access
+	-mno-unaligned-access
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
