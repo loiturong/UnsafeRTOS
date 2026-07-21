@@ -15,7 +15,7 @@ _sstack_bottom = _sstack_top - SSTACK_SIZE;
 _ustack_top = _sstack_bottom;
 
 SECTIONS
-{	
+{
 	. = ORIGIN(FLASH);
 	/* Place Startup code */
 	.startup ALIGN(4) :
@@ -37,14 +37,23 @@ SECTIONS
 		*(.rodata.*)
 	}>FLASH
 
+	/* Below Sections are using RAM memory region */
+	. = ORIGIN(RAM);
 	.data ALIGN(4) :
 	{
+		data_start = .;
 		*(.data.*)
 	}>RAM AT>FLASH
 
 	.bss ALIGN(4) :
 	{
+		bss_load_start = .;
 		*(.bss.*)
     		. = ALIGN(4);
 	}>RAM
+
+	/* Compute data length */
+	data_size = SIZEOF(.data);
+	data_load_start = LOADADDR(.data);
+	bss_size = SIZEOF(.bss);
 }
