@@ -33,6 +33,7 @@ CMSIS/Include/*
 
 # Exclude CMSIS for the Board
 !CMSIS/Include/cmsis_version.h
+!CMSIS/Include/cmsis_gcc.h
 !CMSIS/Include/cmsis_compiler.h
 !CMSIS/Include/mpu_armv7.h
 !CMSIS/Include/core_cm4.h
