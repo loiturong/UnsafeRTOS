@@ -6,16 +6,6 @@ MEMORY
 	FLASH (rx)	: ORIGIN = 0x08000000, LENGTH = 512K
 }
 
-PHDRS
-{
-	HW_SPC	PT_LOAD FLAGS(4);
-	CODE	PT_LOAD FLAGS(6);
-	RODATA	PT_LOAD FLAGS(4);
-	DATA	PT_LOAD FLAGS(5);
-	DEBUG	PT_NULL;
-	PROC	PT_NOTE;
-}
-
 /* Stack size for system and user */
 SSTACK_SIZE = 0x10000;
 
@@ -25,32 +15,36 @@ _sstack_bottom = _sstack_top - SSTACK_SIZE;
 _ustack_top = _sstack_bottom;
 
 SECTIONS
-{
+{	
+	. = ORIGIN(FLASH);
 	/* Place Startup code */
 	.startup ALIGN(4) :
   	{
     		KEEP(*(.hardware_startup))
-  	}>FLASH : HW_SPC
+		. = ALIGN(4);
+  	}>FLASH
 
 	.text ALIGN(4) :
 	{
-		*(.bootloader)
+		KEEP(*(.bootloader))
+		*(.text)
 		*(.text.*)	/* Use of function-section */
-	}>FLASH : CODE
+		. = ALIGN(4);
+	}>FLASH
 
 	.rodata ALIGN(4) :
 	{
 		*(.rodata.*)
-	}>RAM AT>FLASH : RODATA
+	}>FLASH
 
 	.data ALIGN(4) :
 	{
 		*(.data.*)
-	}>RAM AT>FLASH : DATA
+	}>RAM AT>FLASH
 
 	.bss ALIGN(4) :
 	{
 		*(.bss.*)
     		. = ALIGN(4);
-	}>RAM : DATA
+	}>RAM
 }
