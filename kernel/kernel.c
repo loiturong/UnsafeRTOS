@@ -6,9 +6,9 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-#include <board/stm32f4xe.h>
+// #include <board/stm32f4xe.h>
 
-void main()
+void kernel_main()
 {
 	while(1);
 }
