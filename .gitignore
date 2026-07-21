@@ -27,6 +27,9 @@ Desktop.ini
 # Debug tool
 .gdbinit
 openocd.cfg
+emulator-command.md
+# Makefile store autocommand
+Makefile
 
 # CMSIS from ARM
 CMSIS/Include/*

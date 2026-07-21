@@ -6,7 +6,7 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-// #include <board/stm32f4xe.h>
+#include <board/stm32f405xx.h>
 
 void kernel_main()
 {

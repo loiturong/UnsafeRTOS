@@ -1,13 +1,13 @@
 /**
- * @file    : stm32f4xe.h
- * @brief   : Device header for F4 family
+ * @file    : stm32f411xe.h
+ * @brief   : Device header for F411, the file is named the same as CubeMX generated driver
  *
  * @Author  : Loiturong
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-#ifndef STM32F4XE_H
-#define STM32F4XE_H
+#ifndef STM32F411XE_H
+#define STM32F411XE_H
 
 /* minimal CMSIS needs */
 #define __CM4_REV		0x0001U
@@ -31,4 +31,4 @@ typedef enum
 
 #include <CMSIS/Include/core_cm4.h>
 
-#endif /* STM32F4XE_H */
+#endif /* STM32F4111XE_H */
