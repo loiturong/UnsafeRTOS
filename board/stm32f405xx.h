@@ -19,14 +19,14 @@
 
 typedef enum
 {
-	NonMaskableInt_IRQn         = -14,
-	MemoryManagement_IRQn       = -12,
-	BusFault_IRQn               = -11,
-	UsageFault_IRQn             = -10,
-	SVCall_IRQn                 = -5,
-	DebugMonitor_IRQn           = -4,
-	PendSV_IRQn                 = -2,
-	SysTick_IRQn                = -1,
+	NonMaskableInt_IRQn	= -14,
+	MemoryManagement_IRQn	= -12,
+	BusFault_IRQn		= -11,
+	UsageFault_IRQn		= -10,
+	SVCall_IRQn		= -5,
+	DebugMonitor_IRQn	= -4,
+	PendSV_IRQn		= -2,
+	SysTick_IRQn		= -1,
 } IRQn_Type;
 
 #include <CMSIS/Include/core_cm4.h>
