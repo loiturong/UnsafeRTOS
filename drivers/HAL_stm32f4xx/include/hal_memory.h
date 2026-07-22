@@ -18,6 +18,6 @@
 /* AHB1 BUS address */
 #define AHB1_BASE	0x40020000
 
-#define RCC_BASE	AHB1_BASE + 0x3800
+#define RCC_BASE	(AHB1_BASE + 0x00003800)
 
 #endif /* HAL_MEMORY_H */
