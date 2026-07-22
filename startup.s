@@ -62,6 +62,10 @@ init_data:
 .data_bss_literal_pool:
 	.ltorg
 
+/* Default execption handler with infinite loop */
+default_handler:
+	b default_handler
+
 .section .hardware_startup
 .type  vector_table, %object
 .global vector_table
@@ -73,5 +77,5 @@ init_data:
 	.word reset_handler
 	/* Other added latter */
 	.rept 254
-	.word reset_handler
+	.word default_handler
 	.endr
