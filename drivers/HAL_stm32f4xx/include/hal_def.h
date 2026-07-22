@@ -30,7 +30,8 @@ static inline int reg_set_bits_wait(volatile uint32_t *reg, uint32_t mask, uint3
 }
 
 static inline int reg_get_bits(volatile uint32_t *reg, uint32_t mask) {
-    return *reg & mask;
+    int bit = *reg & mask;
+    return bit;
 }
 
 #endif /* HAL_DEF_H */

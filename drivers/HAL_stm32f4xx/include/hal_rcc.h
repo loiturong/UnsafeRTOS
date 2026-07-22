@@ -6,10 +6,12 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-#ifndef HAL-RCC_H
+#ifndef HAL_RCC_H
 #define HAL_RCC_H
 
 #include <stdint.h>
+#include "hal_def.h"
+#include "hal_memory.h"
 
 /* Set of registers of RCC */
 struct RCC_REGS {
