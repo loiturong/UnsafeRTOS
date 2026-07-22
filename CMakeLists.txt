@@ -51,7 +51,12 @@ set(SOURCE_FILES
 )
 set(LINKER_SCRIPT ${DIR}/linker.ld)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+add_subdirectory(drivers/HAL_stm32f4xx)
+
+add_executable(${PROJECT_NAME} 
+	${SOURCE_FILES}
+	$<TARGET_OBJECTS:hal>
+)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE
 	ARM_MATH_CM4
@@ -90,7 +95,6 @@ target_link_options(${PROJECT_NAME} PRIVATE
 	-Wl,-gc-sections,--print-memory-usage,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map
 	-T ${LINKER_SCRIPT}
 )
-
 
 # Build binary for the board
 set(BIN_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.bin)
