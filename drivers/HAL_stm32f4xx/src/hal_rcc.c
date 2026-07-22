@@ -21,7 +21,17 @@ void rcc_init_hsi()
 	RCC->cr_reg |= RCC_CR_HSION;
 
 	/* hold for ready status */
-	while(((RCC->cr_reg & RCC_CR_HSIRDY) == 0));
+#ifdef QEMU_BUILD
 	return;
+#else
+	int time = 10000;
+	while(((RCC->cr_reg & RCC_CR_HSIRDY) == 0)) {
+		time--;
+		/* leave unhandle time out for now */
+		if (time <= 0)
+			break;
+	}
+	return;
+#endif
 }
 

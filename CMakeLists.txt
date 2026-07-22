@@ -39,6 +39,13 @@ set(CMAKE_C_FLAGS_DEBUG "")
 set(CMAKE_C_FLAGS_RELWITHDEBINFO "")
 set(CMAKE_C_FLAGS_MINSIZEREL "")
 
+# Build and Test on Qemu
+option(TARGET_QEMU "Build for QEMU emulation instead of real hardware" OFF)
+
+if(TARGET_QEMU)
+    add_compile_definitions(QEMU_BUILD)
+endif()
+
 # project settings
 project(rtos C ASM)
 set(CMAKE_C_STANDARD 11)
