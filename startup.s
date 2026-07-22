@@ -63,16 +63,15 @@ init_data:
 	.ltorg
 
 .section .hardware_startup
-.type  int_table, %object
-.global int_table
+.type  vector_table, %object
+.global vector_table
 
 /* ARM fetch first 2 word for its hardware startup sequence */
-.startup_seq:
-	.word _sstack_top
 /* also place the interrupt vector table in this region */
-.int_table:
+.vector_table:
+	.word _sstack_top
 	.word reset_handler
 	/* Other added latter */
-	.rept 255
+	.rept 254
 	.word reset_handler
 	.endr
