@@ -6,7 +6,7 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-#include <board/stm32f405xx.h>
+#include <CMSIS/DeviceHeader/stm32f405xx.h>
 #include <drivers/HAL_stm32f4xx/include/hal.h>
 
 void kernel_main()
