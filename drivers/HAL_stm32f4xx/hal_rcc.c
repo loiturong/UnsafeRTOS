@@ -56,7 +56,6 @@ struct RCC_STRCT {
 #define RCC_REG_MSK		0xFFFFFFFFU
 
 /* Clock Control Register */
-
 #define RCC_CR_HSION		(RCC_REG_MSK & (1 << 0))
 #define RCC_CR_HSIRDY		(RCC_REG_MSK & (1 << 1))
 #define RCC_CR_HSITRIM		(RCC_REG_MSK & (0x1F << 3))
@@ -76,6 +75,14 @@ struct RCC_STRCT {
 /* clock control & status Register */
 #define RCC_REMOVE_RESET	(RCC_REG_MSK & (1 << 24))
 
+/* Clock configuration Register */
+#define RCC_SW_HSI		(RCC_REG_MSK & (0x00 << 0))
+#define RCC_SW_HSE		(RCC_REG_MSK & (0x01 << 0))
+#define RCC_SW_PLL		(RCC_REG_MSK & (0x10 << 0))
+// Read-only pair, compare with the set pair to see if the system has switch
+#define RCC_SWS			(RCC_REG_MSK & (0x11 << 2))
+
+
 /* read reset status later */
 void rcc_after_reset()
 {
@@ -90,7 +97,6 @@ void rcc_init_hsi()
 
 	/* hold for ready status */
 #ifdef QEMU_BUILD
-	return;
 #else
 	int time = 10000;
 	while(((RCC->RCC_CR & RCC_CR_HSIRDY) == 0)) {
@@ -101,5 +107,14 @@ void rcc_init_hsi()
 	}
 	return;
 #endif
+	/* switch system clock */
+	RCC->RCC_CFGR |= RCC_SW_HSI;
+	// insert wait state
+	for(int i = 10;i > 0;i--);
+	if ((RCC->RCC_CFGR & RCC_SWS) == RCC_SW_HSI)
+		return;
+	// Unhandled here, handler latter
+	return;
 }
+
 
