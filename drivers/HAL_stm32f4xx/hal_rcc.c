@@ -13,43 +13,43 @@
 
 /* Set of registers of RCC */
 struct RCC_STRCT {
-	volatile uint32_t RCC_CR;
-	volatile uint32_t RCC_PLLCFGR;
-	volatile uint32_t RCC_CFGR;
-	volatile uint32_t RCC_CIR;
+	volatile uint32_t CR;
+	volatile uint32_t PLLCFGR;
+	volatile uint32_t CFGR;
+	volatile uint32_t CIR;
 	/* AHB peripherals reset */
-	volatile uint32_t RCC_AHB1RSTR;
-	volatile uint32_t RCC_AHB2RSTR;
-	volatile uint32_t RCC_AHB3RSTR;
+	volatile uint32_t AHB1RSTR;
+	volatile uint32_t AHB2RSTR;
+	volatile uint32_t AHB3RSTR;
 	uint32_t _reserved_0[1];
 	/* APB peripherals reset */
-	volatile uint32_t RCC_APB1RSTR;
-	volatile uint32_t RCC_APB2RSTR;
+	volatile uint32_t APB1RSTR;
+	volatile uint32_t APB2RSTR;
 	uint32_t _reserved_1[2];
 	/* AHB peripheral clock enable */
-	volatile uint32_t RCC_AHB1ENR;
-	volatile uint32_t RCC_AHB2ENR;
-	volatile uint32_t RCC_AHB3ENR;
+	volatile uint32_t AHB1ENR;
+	volatile uint32_t AHB2ENR;
+	volatile uint32_t AHB3ENR;
 	uint32_t _reserved_2[1];
 	/* APB peripheral clock enable */
-	volatile uint32_t RCC_APB1ENR;
-	volatile uint32_t RCC_APB2ENR;
+	volatile uint32_t APB1ENR;
+	volatile uint32_t APB2ENR;
 	uint32_t _reserved_3[2];
 	/* AHB peripheral clock enable in low power mode */
-	volatile uint32_t RCC_AHB1LPENR;
-	volatile uint32_t RCC_AHB2LPENR;
-	volatile uint32_t RCC_AHB3LPENR;
+	volatile uint32_t AHB1LPENR;
+	volatile uint32_t AHB2LPENR;
+	volatile uint32_t AHB3LPENR;
 	uint32_t _reserved_4[1];
 	/* APB peripheral clock enable in low power mode */
-	volatile uint32_t RCC_APB1LPENR;
-	volatile uint32_t RCC_APB2LPENR;
+	volatile uint32_t APB1LPENR;
+	volatile uint32_t APB2LPENR;
 	uint32_t _reserved_5[2];
 
-	volatile uint32_t RCC_BDCR;
-	volatile uint32_t RCC_CSR;
+	volatile uint32_t BDCR;
+	volatile uint32_t CSR;
 	uint32_t _reserved_6[2];
-	volatile uint32_t RCC_SSCGR;	// spread spectrum clock generation register
-	volatile uint32_t RCC_PLLI2SCFGR;
+	volatile uint32_t SSCGR;	// spread spectrum clock generation register
+	volatile uint32_t PLLI2SCFGR;
 };
 
 #define RCC 			((volatile struct RCC_STRCT *)RCC_BASE)
@@ -87,19 +87,19 @@ struct RCC_STRCT {
 void rcc_after_reset()
 {
 	/* Clear reset flags, this register is no-wait state */
-	RCC->RCC_CSR |= RCC_REMOVE_RESET;
+	RCC->CSR |= RCC_REMOVE_RESET;
 }
 
 void rcc_init_hsi()
 {
 	/* Access: no wait state, word, half-word and byte access */
-	RCC->RCC_CR |= RCC_CR_HSION;
+	RCC->CR |= RCC_CR_HSION;
 
 	/* hold for ready status */
 #ifdef QEMU_BUILD
 #else
 	int time = 10000;
-	while(((RCC->RCC_CR & RCC_CR_HSIRDY) == 0)) {
+	while(((RCC->CR & RCC_CR_HSIRDY) == 0)) {
 		time--;
 		/* leave unhandle time out for now */
 		if (time <= 0)
@@ -108,13 +108,14 @@ void rcc_init_hsi()
 	return;
 #endif
 	/* switch system clock */
-	RCC->RCC_CFGR |= RCC_SW_HSI;
+	RCC->CFGR |= RCC_SW_HSI;
+
+	/* maybe change to wait for the status == set to continue instead of a loop */
 	// insert wait state
 	for(int i = 10;i > 0;i--);
-	if ((RCC->RCC_CFGR & RCC_SWS) == RCC_SW_HSI)
+	if (((RCC->CFGR & RCC_SWS) >> 2) == RCC_SW_HSI)
 		return;
 	// Unhandled here, handler latter
 	return;
 }
-
 
