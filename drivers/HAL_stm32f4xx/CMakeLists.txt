@@ -1,6 +1,6 @@
 set(target hal)
 
-set(DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(SRC 
 	${DIR}/hal.c
 	${DIR}/hal_rcc.c
@@ -9,7 +9,7 @@ set(SRC
 add_library(${target} OBJECT ${SRC})
 target_link_libraries(${target} PRIVATE general_flags)
 target_include_directories(${target} PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/include
+	${DIR}/include
 )
 
 target_compile_options(${target} PRIVATE
