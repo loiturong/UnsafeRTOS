@@ -12,42 +12,47 @@
 #include "hal_rcc.h"
 
 /* Set of registers of RCC */
-struct RCC_REGS {
-	volatile uint32_t cr_reg;
-	volatile uint32_t pll_cfg;
-	volatile uint32_t clck_cfg;
-	volatile uint32_t clck_int;
+struct RCC_STRCT {
+	volatile uint32_t RCC_CR;
+	volatile uint32_t RCC_PLLCFGR;
+	volatile uint32_t RCC_CFGR;
+	volatile uint32_t RCC_CIR;
 	/* AHB peripherals reset */
-	volatile uint32_t ahb1_rs;
-	volatile uint32_t ahb2_rs;
-	volatile uint32_t ahb3_rs;
+	volatile uint32_t RCC_AHB1RSTR;
+	volatile uint32_t RCC_AHB2RSTR;
+	volatile uint32_t RCC_AHB3RSTR;
+	uint32_t _reserved_0[1];
 	/* APB peripherals reset */
-	volatile uint32_t apb1_rs;
-	volatile uint32_t apb2_rs;
+	volatile uint32_t RCC_APB1RSTR;
+	volatile uint32_t RCC_APB2RSTR;
+	uint32_t _reserved_1[2];
 	/* AHB peripheral clock enable */
-	volatile uint32_t ahb1_ena;
-	volatile uint32_t ahb2_ena;
-	volatile uint32_t ahb3_ena;
+	volatile uint32_t RCC_AHB1ENR;
+	volatile uint32_t RCC_AHB2ENR;
+	volatile uint32_t RCC_AHB3ENR;
+	uint32_t _reserved_2[1];
 	/* APB peripheral clock enable */
-	volatile uint32_t apb1_ena;
-	volatile uint32_t apb2_ena;
+	volatile uint32_t RCC_APB1ENR;
+	volatile uint32_t RCC_APB2ENR;
+	uint32_t _reserved_3[2];
 	/* AHB peripheral clock enable in low power mode */
-	volatile uint32_t ahb1_ena_lpw;
-	volatile uint32_t ahb2_ena_lpw;
-	volatile uint32_t ahb3_ena_lpw;
+	volatile uint32_t RCC_AHB1LPENR;
+	volatile uint32_t RCC_AHB2LPENR;
+	volatile uint32_t RCC_AHB3LPENR;
+	uint32_t _reserved_4[1];
 	/* APB peripheral clock enable in low power mode */
-	volatile uint32_t apb1_ena_lpw;
-	volatile uint32_t apb2_ena_lpw;
+	volatile uint32_t RCC_APB1LPENR;
+	volatile uint32_t RCC_APB2LPENR;
+	uint32_t _reserved_5[2];
 
-	volatile uint32_t backup_cr;
-	volatile uint32_t clck_stats;
-	/* spread spectrum clock generation register */
-	volatile uint32_t spd_spctum_clck_gen;
-
-	volatile uint32_t plli2s_cfg;
+	volatile uint32_t RCC_BDCR;
+	volatile uint32_t RCC_CSR;
+	uint32_t _reserved_6[2];
+	volatile uint32_t RCC_SSCGR;	// spread spectrum clock generation register
+	volatile uint32_t RCC_PLLI2SCFGR;
 };
 
-#define RCC 			((volatile struct RCC_REGS *)RCC_BASE)
+#define RCC 			((volatile struct RCC_STRCT *)RCC_BASE)
 #define RCC_REG_MSK		0xFFFFFFFFU
 
 /* Clock Control Register */
@@ -75,20 +80,20 @@ struct RCC_REGS {
 void rcc_after_reset()
 {
 	/* Clear reset flags, this register is no-wait state */
-	RCC->cr_reg |= RCC_REMOVE_RESET;
+	RCC->RCC_CSR |= RCC_REMOVE_RESET;
 }
 
 void rcc_init_hsi()
 {
 	/* Access: no wait state, word, half-word and byte access */
-	RCC->cr_reg |= RCC_CR_HSION;
+	RCC->RCC_CR |= RCC_CR_HSION;
 
 	/* hold for ready status */
 #ifdef QEMU_BUILD
 	return;
 #else
 	int time = 10000;
-	while(((RCC->cr_reg & RCC_CR_HSIRDY) == 0)) {
+	while(((RCC->RCC_CR & RCC_CR_HSIRDY) == 0)) {
 		time--;
 		/* leave unhandle time out for now */
 		if (time <= 0)
