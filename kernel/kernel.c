@@ -7,7 +7,7 @@
  */
 
 #include <Port/Include/port.h>
-#include <HAL/include/hal.h>
+#include <HAL/Include/hal.h>
 
 void kernel_main()
 {

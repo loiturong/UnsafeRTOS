@@ -9,7 +9,7 @@ set(SRC
 add_library(${target} OBJECT ${SRC})
 target_link_libraries(${target} PRIVATE general_flags)
 target_include_directories(${target} PRIVATE
-	${DIR}/include
+	${DIR}/Include
 )
 
 target_compile_options(${target} PRIVATE
