@@ -12,5 +12,8 @@
 void kernel_main()
 {
 	early_init();
+	// 16MHz, 1ms
+	SysTick_Config(16000000, 1);
+
 	while(1);
 }

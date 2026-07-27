@@ -16,9 +16,9 @@
  */
 uint32_t SysTick_Config(uint32_t freq, uint32_t interval)
 {	
-	uint32_t ticks = (freq - 1) / interval;
+	uint32_t ticks = ((freq - 1) * interval) / 1000;
 	// Only has [23:0] usable, [32:24] is reserved
-	if ((ticks - 1) > SysTick_LOAD_RELOAD_Msk)
+	if (ticks > SysTick_LOAD_RELOAD_Msk)
 	{
 	  return 1;
 	}
