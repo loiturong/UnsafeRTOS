@@ -55,15 +55,16 @@ set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(SOURCE_FILES
 	${DIR}/startup.s
 	${DIR}/kernel/kernel.c
-	${DIR}/port/port.c
 )
 set(LINKER_SCRIPT ${DIR}/linker.ld)
 
-add_subdirectory(drivers/HAL_stm32f4xx)
+add_subdirectory(HAL)
+add_subdirectory(Port)
 
 add_executable(${PROJECT_NAME} 
 	${SOURCE_FILES}
-	$<TARGET_OBJECTS:hal>
+	$<TARGET_OBJECTS:HAL>
+	$<TARGET_OBJECTS:Port>
 )
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE

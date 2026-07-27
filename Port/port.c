@@ -6,7 +6,8 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-#include <CMSIS/DeviceHeader/stm32f405xx.h>
+#include "stm32f405xx.h"
+#include "port.h"
 
 /*
  * SysTick configuration
@@ -15,13 +16,14 @@
  */
 uint32_t SysTick_Config(uint32_t freq, uint32_t interval)
 {	
+	uint32_t ticks = (freq - 1) / interval;
 	// Only has [23:0] usable, [32:24] is reserved
 	if ((ticks - 1) > SysTick_LOAD_RELOAD_Msk)
 	{
 	  return 1;
 	}
 
-	SysTick->LOAD = (freq - 1)/ interval;
+	SysTick->LOAD = ticks;
 	SysTick->VAL = 0;
 	
 	// internal clock source + enable interrupt + enable counter

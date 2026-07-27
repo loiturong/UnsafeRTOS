@@ -29,6 +29,6 @@ typedef enum
 	SysTick_IRQn		= -1,
 } IRQn_Type;
 
-#include <CMSIS/Include/core_cm4.h>
+#include "core_cm4.h"
 
 #endif /* STM32F405XX_H */

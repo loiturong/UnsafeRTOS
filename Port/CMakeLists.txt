@@ -1,15 +1,16 @@
-set(target HAL)
+set(target Port)
 
 set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(SRC 
-	${DIR}/hal.c
-	${DIR}/hal_rcc.c
+	${DIR}/port.c
 )
 
 add_library(${target} OBJECT ${SRC})
 target_link_libraries(${target} PRIVATE general_flags)
 target_include_directories(${target} PRIVATE
-	${DIR}/include
+	${DIR}/Include
+	${DIR}/CMSIS/Include
+	${DIR}/CMSIS/DeviceHeader
 )
 
 target_compile_options(${target} PRIVATE
