@@ -3,6 +3,7 @@ set(target Port)
 set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(SRC 
 	${DIR}/port.c
+	${DIR}/interrupt.c
 	${DIR}/vector_table.s
 )
 
