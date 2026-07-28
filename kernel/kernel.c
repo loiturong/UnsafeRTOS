@@ -12,6 +12,9 @@
 void kernel_main()
 {
 	early_init();
+
+	setupNVIC();
+
 	// 16MHz, 1ms
 	SysTick_Config(16000000, 1);
 

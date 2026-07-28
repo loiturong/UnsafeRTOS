@@ -56,4 +56,6 @@ SECTIONS
 	data_size = SIZEOF(.data);
 	data_load_start = LOADADDR(.data);
 	bss_size = SIZEOF(.bss);
+	/* VTOR */
+	vtor_offset = LOADADDR(.isr_vector);
 }
