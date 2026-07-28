@@ -1,10 +1,10 @@
 .syntax unified
 
 .section .bootloader
-.type  reset_handler, %function
-.global reset_handler
+.type  Reset_Handler, %function
+.global Reset_Handler
 
-reset_handler:
+Reset_Handler:
 	ldr sp, =_sstack_top
 
 	/* zero bss and copy data */
@@ -62,20 +62,3 @@ init_data:
 .data_bss_literal_pool:
 	.ltorg
 
-/* Default execption handler with infinite loop */
-default_handler:
-	b default_handler
-
-.section .hardware_startup
-.type  vector_table, %object
-.global vector_table
-
-/* ARM fetch first 2 word for its hardware startup sequence */
-/* also place the interrupt vector table in this region */
-.vector_table:
-	.word _sstack_top
-	.word reset_handler
-	/* Other added latter */
-	.rept 254
-	.word default_handler
-	.endr

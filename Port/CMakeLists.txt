@@ -3,6 +3,7 @@ set(target Port)
 set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(SRC 
 	${DIR}/port.c
+	${DIR}/vector_table.s
 )
 
 add_library(${target} OBJECT ${SRC})
