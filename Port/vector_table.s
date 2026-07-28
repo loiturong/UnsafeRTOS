@@ -26,7 +26,7 @@ Default_Handler:
 .thumb_set PendSV_Handler, Default_Handler
 .thumb_set SysTick_Handler, Default_Handler
 
-.section .hardware_startup
+.section .interrupt_vector_table
 .type  vector_table, %object
 .global vector_table
 

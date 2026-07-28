@@ -18,9 +18,9 @@ SECTIONS
 {
 	. = ORIGIN(FLASH);
 	/* Place Startup code */
-	.startup ALIGN(4) :
+	.isr_vector ALIGN(4) :
   	{
-    		KEEP(*(.hardware_startup))
+    		KEEP(*(.interrupt_vector_table))
 		. = ALIGN(4);
   	}>FLASH
 
