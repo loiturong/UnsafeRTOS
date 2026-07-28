@@ -6,9 +6,9 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-#include <stdint.h>
 #include "stm32f405xx.h"
 #include "interrupt.h"
+#include "port.h"
 
 static inline uint32_t valid_offset(uintptr_t offset)
 {
@@ -32,3 +32,4 @@ void setupNVIC()
 		while(1);
 	SCB->VTOR = offs & SCB_VTOR_TBLOFF_Msk;
 }
+

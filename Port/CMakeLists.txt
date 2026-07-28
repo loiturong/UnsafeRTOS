@@ -31,5 +31,7 @@ target_compile_options(${target} PRIVATE
 	-fno-strict-aliasing -fno-stack-protector
 	# No unaligned access
 	-mno-unaligned-access
+	# Check for missing headers, to check for prototype mismatch
+	-Wmissing-prototypes
 )
 

@@ -9,6 +9,6 @@
 #ifndef HAL_H
 #define HAL_H
 
-void early_init();
+void early_init(void);
 
 #endif /* HAL_H */
