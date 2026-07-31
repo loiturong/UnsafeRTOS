@@ -7,7 +7,7 @@
  */
 
 #include "stm32f405xx.h"
-#include "interrupt.h"
+#include "exception.h"
 #include "port.h"
 
 static inline uint32_t valid_offset(uintptr_t offset)
