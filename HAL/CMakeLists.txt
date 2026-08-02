@@ -4,6 +4,7 @@ set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(SRC 
 	${DIR}/hal.c
 	${DIR}/hal_rcc.c
+	${DIR}/vector_table.s
 )
 
 add_library(${target} OBJECT ${SRC})
