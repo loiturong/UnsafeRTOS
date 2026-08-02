@@ -63,6 +63,7 @@ add_subdirectory(Port)
 
 add_executable(${PROJECT_NAME} 
 	${SOURCE_FILES}
+	${LINKER_SCRIPT}
 	$<TARGET_OBJECTS:HAL>
 	$<TARGET_OBJECTS:Port>
 )
