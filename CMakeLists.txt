@@ -110,7 +110,7 @@ target_link_options(${PROJECT_NAME} PRIVATE
 set(BIN_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.bin)
 add_custom_command(
 	TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${PROJECT_NAME}> ${BIN_FILE}
+        COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${PROJECT_NAME}> ${BIN_FILE}
         COMMENT "Building ${BIN_FILE}"
 )
 
