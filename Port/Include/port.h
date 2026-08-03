@@ -12,6 +12,6 @@
 #include <stdint.h>
 
 uint32_t SysTick_Config(uint32_t freq, uint32_t interval);
-void setupNVIC(void);
+void setupException(void);
 
 #endif /* PORT_H */

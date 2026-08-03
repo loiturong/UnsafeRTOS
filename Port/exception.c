@@ -23,13 +23,18 @@ static inline uint32_t valid_offset(uintptr_t offset)
 }
 
 extern char vtor_offset[];
-void setupNVIC()
-{
+void setupException()
+{	
+	__disable_fault_irq();
+	__disable_irq();
 	/* VTOR offset */
 	uintptr_t offs = (uintptr_t)vtor_offset;
 	if (valid_offset(offs) != 0)
 		/* TODO: Need good way to panic here */
 		while(1);
 	SCB->VTOR = offs & SCB_VTOR_TBLOFF_Msk;
+
+	__enable_fault_irq();
+	__enable_irq();
 }
 
