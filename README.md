@@ -14,6 +14,7 @@ interrupts — not just get one running via driver layer.
 - STM32F411xC STM32F411xE - Datasheet
 - Arm® Cortex®-M4 Processor - Technical Reference Manual Revision: r0p1
 - Arm® v7-M Architecture - Reference Manual
+- PM0214 Programming manual - STM32 Cortex®-M4 MCUs and MPUs programming manual
 
 ## Memory Layout
 
