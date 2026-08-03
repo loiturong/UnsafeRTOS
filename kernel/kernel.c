@@ -16,7 +16,7 @@ void kernel_main()
 	setupException();
 
 	// 16MHz, 1ms
-	SysTick_Config(16000000, 1);
+	SysTick_Config(16000000, 10);
 
 	while(1);
 }

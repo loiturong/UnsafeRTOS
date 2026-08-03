@@ -33,6 +33,14 @@ void setupException()
 		/* TODO: Need good way to panic here */
 		while(1);
 	SCB->VTOR = offs & SCB_VTOR_TBLOFF_Msk;
+	
+	/* System Handler */
+	__NVIC_SetPriority(MemoryManagement_IRQn, 0x0UL);
+	__NVIC_SetPriority(BusFault_IRQn, 0x1UL);
+	__NVIC_SetPriority(UsageFault_IRQn, 0x2UL);
+	/* System Call, and PendSV for context switch should have lowest priority */
+	__NVIC_SetPriority(SVCall_IRQn, 0xFUL);
+	__NVIC_SetPriority(PendSV_IRQn, 0xFUL);
 
 	__enable_fault_irq();
 	__enable_irq();

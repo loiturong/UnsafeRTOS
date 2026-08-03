@@ -13,6 +13,7 @@
  * SysTick configuration
  * Now assume using HSI
  * interval in miliseconnd
+ * Entry this function require exception to be fully setup
  */
 uint32_t SysTick_Config(uint32_t freq, uint32_t interval)
 {	
@@ -26,6 +27,15 @@ uint32_t SysTick_Config(uint32_t freq, uint32_t interval)
 	SysTick->LOAD = ticks;
 	SysTick->VAL = 0;
 	
+	/* CMSIS provide SetPriority Function that handle both 
+	 * External Interrupt and Core Fault Exception. 
+	 * System handler priotity registers, include a set of 3 register.
+	 * Choosing of SHPR is also handled by the function.
+	 * A PRI_N field is 8-bit wise, but F4 families implement bits[7:3] only,
+	 * so putting a 4-bit value is enough.
+	 */
+	__NVIC_SetPriority(SysTick_IRQn, 0xFUL);
+
 	// internal clock source + enable interrupt + enable counter
 	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |
 		SysTick_CTRL_TICKINT_Msk |
