@@ -5,10 +5,11 @@ set(SRC
 	${DIR}/port.c
 	${DIR}/exception.c
 	${DIR}/vector_table.s
+	${DIR}/exception_handler.c
 )
 
 add_library(${target} OBJECT ${SRC})
-target_link_libraries(${target} PRIVATE general_flags)
+target_link_libraries(${target} PRIVATE)
 target_include_directories(${target} PRIVATE
 	${DIR}/Include
 	${DIR}/CMSIS/Include
