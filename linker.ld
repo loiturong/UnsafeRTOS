@@ -18,8 +18,9 @@ SECTIONS
 {
 	. = ORIGIN(FLASH);
 	/* Place Startup code */
-	.isr_vector ALIGN(4) :
+	.isr_vector :
   	{
+    		KEEP(*(.exception_vector_table))
     		KEEP(*(.interrupt_vector_table))
 		. = ALIGN(4);
   	}>FLASH
@@ -59,3 +60,10 @@ SECTIONS
 	/* VTOR */
 	vtor_offset = LOADADDR(.isr_vector);
 }
+
+/* Cortex-M4 supports maximum of 256 words, 
+ * if this assert overflow, it means, 
+ * the vector is either placed wrong, or setup wrong 
+ */
+ASSERT(SIZEOF(.isr_vector) <= (256 * 4), "Vector table exceeds maximum size!")
+
