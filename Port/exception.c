@@ -6,9 +6,11 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-#include "stm32f405xx.h"
+#include "stm32f411xe.h"
 #include "exception.h"
 #include "port.h"
+
+static void setupEXTI(void);
 
 static inline uint32_t valid_offset(uintptr_t offset)
 {
@@ -38,11 +40,19 @@ void setupException()
 	__NVIC_SetPriority(MemoryManagement_IRQn, 0x0UL);
 	__NVIC_SetPriority(BusFault_IRQn, 0x1UL);
 	__NVIC_SetPriority(UsageFault_IRQn, 0x2UL);
+	__NVIC_SetPriority(DebugMonitor_IRQn, 0x3UL);
 	/* System Call, and PendSV for context switch should have lowest priority */
 	__NVIC_SetPriority(SVCall_IRQn, 0xFUL);
 	__NVIC_SetPriority(PendSV_IRQn, 0xFUL);
+	
+	setupEXTI();
 
 	__enable_fault_irq();
 	__enable_irq();
 }
 
+/* All External Interrupt should have priotiy below DebugMonitor */
+static void setupEXTI()
+{
+	return;
+}
