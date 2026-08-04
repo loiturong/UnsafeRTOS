@@ -42,8 +42,8 @@ void setupException()
 	__NVIC_SetPriority(UsageFault_IRQn, 0x2UL);
 	__NVIC_SetPriority(DebugMonitor_IRQn, 0x3UL);
 	/* System Call, and PendSV for context switch should have lowest priority */
-	__NVIC_SetPriority(SVCall_IRQn, 0xFUL);
-	__NVIC_SetPriority(PendSV_IRQn, 0xFUL);
+	__NVIC_SetPriority(SVCall_IRQn, 0xFFUL);
+	__NVIC_SetPriority(PendSV_IRQn, 0xFFUL);
 	
 	setupEXTI();
 
@@ -54,5 +54,10 @@ void setupException()
 /* All External Interrupt should have priotiy below DebugMonitor */
 static void setupEXTI()
 {
+	/* TODO: Read maximum support interrup line register instead of hardcode */
+	for (int i = 0; i <= 90; i++) {
+		__NVIC_SetPriority((IRQn_Type)i, 0x04UL);
+		__NVIC_ClearPendingIRQ((IRQn_Type)i);
+	}
 	return;
 }
