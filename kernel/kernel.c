@@ -11,12 +11,16 @@
 
 void kernel_main()
 {
+	disable_int();
+
 	early_init();
 
 	setupException();
 
 	// 16MHz, 1ms
 	SysTick_Config(16000000, 10);
+
+	enable_int();
 
 	while(1);
 }

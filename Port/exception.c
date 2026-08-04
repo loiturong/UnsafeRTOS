@@ -11,24 +11,22 @@
 #include "port.h"
 
 static void setupEXTI(void);
+static inline uint32_t valid_offset(uintptr_t offset);
 
-static inline uint32_t valid_offset(uintptr_t offset)
+void enable_int()
 {
-	/* check for masking bit */
-	if (offset != (offset & SCB_VTOR_TBLOFF_Msk))
-		return -1;
-	/* Max support offset */
-	SCB->VTOR |= SCB_VTOR_TBLOFF_Msk;
-	if (offset > (SCB->VTOR & SCB_VTOR_TBLOFF_Msk))
-		return -1;
-	return 0;
+	__enable_irq();
+}
+
+void disable_int()
+{
+	__disable_irq();
 }
 
 extern char vtor_offset[];
 void setupException()
 {	
 	__disable_fault_irq();
-	__disable_irq();
 	/* VTOR offset */
 	uintptr_t offs = (uintptr_t)vtor_offset;
 	if (valid_offset(offs) != 0)
@@ -48,7 +46,19 @@ void setupException()
 	setupEXTI();
 
 	__enable_fault_irq();
-	__enable_irq();
+}
+
+
+uint32_t valid_offset(uintptr_t offset)
+{
+	/* check for masking bit */
+	if (offset != (offset & SCB_VTOR_TBLOFF_Msk))
+		return -1;
+	/* Max support offset */
+	SCB->VTOR |= SCB_VTOR_TBLOFF_Msk;
+	if (offset > (SCB->VTOR & SCB_VTOR_TBLOFF_Msk))
+		return -1;
+	return 0;
 }
 
 /* All External Interrupt should have priotiy below DebugMonitor */
