@@ -67,7 +67,7 @@ typedef enum
 	
 	EXTI5_10_IRQn			= 40,
 	EXTI17_IRQn			= 41,
-	EXTI18_IRQn			= 41,
+	EXTI18_IRQn			= 42,
 
 	DMA1_Stream7_IRQn		= 47,
 
@@ -85,12 +85,12 @@ typedef enum
 	DMA2_Stream5_IRQn		= 68,
 	DMA2_Stream6_IRQn		= 69,
 	DMA2_Stream7_IRQn		= 70,
-	
 	USART6_IRQn			= 71,
 	I2C3_EV_IRQn			= 72,
 	I2C3_ER_IRQn			= 73,
 
 	FPU_IRQn			= 81,
+
 	SPI4_IRQn			= 84,
 	SPI5_IRQn			= 85,
 
