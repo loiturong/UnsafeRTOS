@@ -55,6 +55,7 @@ set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(SOURCE_FILES
 	${DIR}/startup.s
 	${DIR}/kernel/kernel.c
+	${DIR}/kernel/task.c
 )
 set(LINKER_SCRIPT ${DIR}/linker.ld)
 

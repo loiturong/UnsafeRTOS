@@ -9,6 +9,8 @@
 #include <Port/Include/port.h>
 #include <HAL/Include/hal.h>
 
+#include "task.h"
+
 void kernel_main()
 {
 	disable_int();
@@ -21,6 +23,8 @@ void kernel_main()
 	SysTick_Config(16000000, 10);
 
 	enable_int();
+	
+	task_a();
 
 	while(1);
 }
