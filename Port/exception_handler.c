@@ -6,15 +6,22 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
+#include "stm32f411xe.h"
 #include <stdint.h>
 
-uint32_t counter = 0;
 void SysTick_Handler(void);
 void SVCall_Handler(void);
 void PendSV_Handler(void);
 
 void SysTick_Handler(void)
 {
-	counter++;
+	// PendSV doing the context switch
+	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+	return;
+}
+
+void PendSV_Handler(void)
+{
+
 }
 
