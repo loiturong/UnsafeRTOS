@@ -9,6 +9,7 @@
 #ifndef TASK_H
 #define TASK_H
 
+void default_task(void);
 void task_a(void);
 void task_b(void);
 
