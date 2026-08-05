@@ -64,9 +64,11 @@ uint32_t valid_offset(uintptr_t offset)
 /* All External Interrupt should have priotiy below DebugMonitor */
 static void setupEXTI()
 {
-	/* TODO: Read maximum support interrup line register instead of hardcode */
-	for (int i = 0; i <= 90; i++) {
-		__NVIC_SetPriority((IRQn_Type)i, 0x04UL);
+	/* Read maximum support interrup line register */
+	int num_lines = (32 + 32 * (int)(SCnSCB->ICTR & SCnSCB_ICTR_INTLINESNUM_Msk));
+	
+	for (int i = 0; i < num_lines; i++) {
+		__NVIC_SetPriority((IRQn_Type)i, 0xFEUL);
 		__NVIC_ClearPendingIRQ((IRQn_Type)i);
 	}
 	return;
