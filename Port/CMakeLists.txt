@@ -4,8 +4,8 @@ set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(SRC 
 	${DIR}/port.c
 	${DIR}/exception.c
+	${DIR}/exception.s
 	${DIR}/vector_table.s
-	${DIR}/exception_handler.c
 )
 
 add_library(${target} OBJECT ${SRC})

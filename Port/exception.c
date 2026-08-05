@@ -10,6 +10,7 @@
 #include "exception.h"
 #include "port.h"
 
+void SysTick_Handler(void);
 static void setupEXTI(void);
 static inline uint32_t valid_offset(uintptr_t offset);
 
@@ -73,3 +74,11 @@ static void setupEXTI()
 	}
 	return;
 }
+
+void SysTick_Handler(void)
+{
+	// PendSV doing the context switch
+	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+	return;
+}
+
