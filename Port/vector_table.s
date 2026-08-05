@@ -1,30 +1,30 @@
 .syntax unified
-
+.thumb
 .section .text.exceptions
-/* Default execption handler with infinite loop */
-Default_Handler:
-	b Default_Handler
 
-.weak MNI_Handler
-.weak HardFault_Handler
-.weak MemManage_Handler
-.weak BusFault_Handler
-.weak UsageFault_Handler
-.weak SVCall_Handler
-.weak DebugMonitor_Handler
-.weak PendSV_Handler
-.weak SysTick_Handler
+.type NMI_Handler, %function
+NMI_Handler:
+	b NMI_Handler
 
-/* Temporary */
-.thumb_set MNI_Handler, Default_Handler
-.thumb_set HardFault_Handler, Default_Handler
-.thumb_set MemManage_Handler, Default_Handler
-.thumb_set BusFault_Handler, Default_Handler
-.thumb_set UsageFault_Handler, Default_Handler
-.thumb_set SVCall_Handler, Default_Handler
-.thumb_set DebugMonitor_Handler, Default_Handler
-.thumb_set PendSV_Handler, Default_Handler
-.thumb_set SysTick_Handler, Default_Handler
+.type HardFault_Handler, %function
+HardFault_Handler:
+	b HardFault_Handler
+
+.type MemManage_Handler, %function
+MemManage_Handler:
+	b MemManage_Handler
+
+.type BusFault_Handler, %function
+BusFault_Handler:
+	b BusFault_Handler
+
+.type UsageFault_Handler, %function
+UsageFault_Handler:
+	b UsageFault_Handler
+
+.type DebugMonitor_Handler, %function
+DebugMonitor_Handler:
+	b DebugMonitor_Handler
 
 .section .exception_vector_table, "a", %progbits
 .type  system_exception_vector_table, %object
@@ -35,7 +35,7 @@ Default_Handler:
 .system_exception_vector_table:
 	.word _sstack_top
 	.word Reset_Handler
-	.word MNI_Handler
+	.word NMI_Handler
 	.word HardFault_Handler
 	.word MemManage_Handler
 	.word BusFault_Handler
