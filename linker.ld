@@ -12,7 +12,6 @@ SSTACK_SIZE = 0x10000;
 /* Stack placement */
 _sstack_top = ORIGIN(RAM) + LENGTH(RAM);
 _sstack_bottom = _sstack_top - SSTACK_SIZE;
-_ustack_top = _sstack_bottom;
 
 SECTIONS
 {
