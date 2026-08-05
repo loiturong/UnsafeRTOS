@@ -34,7 +34,7 @@ uint32_t SysTick_Config(uint32_t freq, uint32_t interval)
 	 * A PRI_N field is 8-bit wise, but F4 families implement bits[7:3] only,
 	 * so putting a 4-bit value is enough.
 	 */
-	__NVIC_SetPriority(SysTick_IRQn, 0xFUL);
+	__NVIC_SetPriority(SysTick_IRQn, 0xFFUL);
 
 	// internal clock source + enable interrupt + enable counter
 	SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk |

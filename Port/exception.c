@@ -35,12 +35,12 @@ void setupException()
 	SCB->VTOR = offs & SCB_VTOR_TBLOFF_Msk;
 	
 	/* System Handler */
-	__NVIC_SetPriority(MemoryManagement_IRQn, 0x0UL);
-	__NVIC_SetPriority(BusFault_IRQn, 0x1UL);
-	__NVIC_SetPriority(UsageFault_IRQn, 0x2UL);
-	__NVIC_SetPriority(DebugMonitor_IRQn, 0x3UL);
+	__NVIC_SetPriority(MemoryManagement_IRQn, 0x00UL);
+	__NVIC_SetPriority(BusFault_IRQn, 0x01UL);
+	__NVIC_SetPriority(UsageFault_IRQn, 0x02UL);
+	__NVIC_SetPriority(DebugMonitor_IRQn, 0x03UL);
 	/* System Call, and PendSV for context switch should have lowest priority */
-	__NVIC_SetPriority(SVCall_IRQn, 0xFFUL);
+	__NVIC_SetPriority(SVCall_IRQn, 0x03UL);
 	__NVIC_SetPriority(PendSV_IRQn, 0xFFUL);
 	
 	setupEXTI();
