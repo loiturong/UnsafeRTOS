@@ -6,7 +6,7 @@ with no HAL/CubeMX abstraction.
 ## Goal
 
 Understand how an RTOS actually works — scheduler, context switching,
-interrupts — not just get one running via driver layer.
+interrupts.
 
 ## Programming References
 
@@ -27,14 +27,16 @@ RAM start at `0x20000000`. The table below is show in a reverse order.
 | 0x20000000 | Start of RAM | static data, bss region |
 | - | after data region | user heap |
 | - | remaining space | heap grows up, stack grows down |
-| 0x2001F000 | - | User stack top |
 | 0x2001F000 | - | System stack bottom |
 | 0x20020000 | End of RAM | System stack top |
 
 ## Status
 
-Board bring-up phase
-Tested on emulation
+- ~~Board bring-up phase~~
+- ~~Setup NVIC~~
+- Setup PendSV and SVCall for kernel initialization
+
+Testing on emulation
 
 ## License
 
