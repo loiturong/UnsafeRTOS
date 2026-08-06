@@ -8,4 +8,7 @@
 
 extern char end_of_data[];
 
+void heapinit()
+{
 
+}

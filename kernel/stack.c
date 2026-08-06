@@ -8,15 +8,13 @@
 
 #include "stack.h"
 
-stack_t init_stack(uintptr_t *head, size_t size)
+void init_stack(stack_t *st, uintptr_t *head, size_t size)
 {
 	uintptr_t *top_stack = (uintptr_t *)((uintptr_t)head + (uintptr_t)size);
-	stack_t st = (stack_t) {
-		.top = top_stack,
-		.pnt = top_stack,
-		.size = size,
-	};
-	return st;
+	st->top = top_stack;
+	st->pnt = top_stack;
+	st->size = size;
+	return;
 }
 
 int push_stack(stack_t *st, uintptr_t item)

@@ -18,7 +18,7 @@ typedef struct {
 	size_t size;
 } stack_t;
 
-stack_t init_stack(uintptr_t *head, size_t size);
+void init_stack(stack_t *st, uintptr_t *head, size_t size);
 int push_stack(stack_t *st, uintptr_t item);
 void *pop_stack(stack_t *st);
 

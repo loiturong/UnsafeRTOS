@@ -15,8 +15,3 @@ void startScheduler()
 	tasklist_init();
 	sys_call();
 }
-
-void picknexttask()
-{
-	tasklistcurr = tasklistcurr->next;
-}
