@@ -30,10 +30,13 @@ RAM start at `0x20000000`. The table below is show in a reverse order.
 | 0x2001F000 | - | System stack bottom |
 | 0x20020000 | End of RAM | System stack top |
 
+Heap using FreeList Allocator
+
 ## Status
 
 - ~~Board bring-up phase~~
 - ~~Setup NVIC~~
+- Simple MemoryManagement
 - Setup PendSV and SVCall for kernel initialization
 
 Testing on emulation
