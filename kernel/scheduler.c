@@ -7,12 +7,15 @@
  */
 
 #include "task.h"
+#include <Port/Include/port.h>
 
-struct TaskContext {
-	uint32_t *sp;
-	uint32_t CurrentContext;
+void startScheduler()
+{
+	tasklist_init();
+	sys_call();
 }
 
-TaskContext TaskList[3];
-
-
+void picknexttask()
+{
+	tasklistcurr = tasklistcurr->next;
+}

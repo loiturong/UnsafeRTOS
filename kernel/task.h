@@ -9,8 +9,22 @@
 #ifndef TASK_H
 #define TASK_H
 
-void default_task(void);
-void task_a(void);
-void task_b(void);
+#include <stdint.h>
+#include <stddef.h>
+#include "stack.h"
+
+// Linked-list style
+struct TaskContext {
+	uintptr_t *sp;
+	struct TaskContext *next;
+	stack_t task_stack;
+};
+
+extern struct TaskContext *tasklisthead;
+extern struct TaskContext *tasklisttail;
+extern struct TaskContext *tasklistcurr;
+
+void task_create(uintptr_t *head, size_t stack_size, uintptr_t *task_entry);
+void tasklist_init(void);
 
 #endif /* TASK_H */

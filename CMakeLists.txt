@@ -56,6 +56,8 @@ set(SOURCE_FILES
 	${DIR}/startup.s
 	${DIR}/kernel/kernel.c
 	${DIR}/kernel/task.c
+	${DIR}/kernel/stack.c
+	${DIR}/kernel/scheduler.c
 )
 set(LINKER_SCRIPT ${DIR}/linker.ld)
 
