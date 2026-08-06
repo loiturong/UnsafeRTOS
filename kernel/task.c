@@ -51,8 +51,8 @@ void task_create(
 void context_init(stack_t *st, uintptr_t *task_entry)
 {
 	push_stack(st, 0x01000000);		// xPRS
-	push_stack(st, (uintptr_t)task_entry);	// R15
-	push_stack(st, 0x00000000);		// R14
+	push_stack(st, (uintptr_t)task_entry);	// R15 (PC)
+	push_stack(st, 0x00000000);		// R14 (LR)
 
 	/* R0, R1, R2, R3, and R12 is "dont' care" value */
 	st->pnt -= 5;

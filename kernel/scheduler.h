@@ -1,0 +1,14 @@
+/**
+ * @file    : scheduler.h
+ * @brief   : 
+ *
+ * @Author  : Loiturong
+ * @License : GNU GENERAL PUBLIC LICENSE
+ */
+
+#ifndef SCHEDULER_H
+#define SCHEDULER_H
+
+void startScheduler(void);
+
+#endif /* SCHEDULER_H */

@@ -8,8 +8,7 @@
 
 #include <Port/Include/port.h>
 #include <HAL/Include/hal.h>
-
-#include "task.h"
+#include "scheduler.h"
 
 void kernel_main()
 {
@@ -19,6 +18,7 @@ void kernel_main()
 	// 16MHz, 1ms
 	SysTick_Config(16000000, 10);
 	enable_int();
+	startScheduler();
 	while(1);
 }
 

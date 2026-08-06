@@ -50,6 +50,7 @@ SECTIONS
 		bss_load_start = .;
 		*(.bss.*)
     		. = ALIGN(4);
+		end_of_data = .;
 	}>RAM
 
 	/* Compute data length */

@@ -8,6 +8,7 @@
 
 #include "task.h"
 #include <Port/Include/port.h>
+#include "scheduler.h"
 
 void startScheduler()
 {
