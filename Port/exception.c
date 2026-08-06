@@ -41,9 +41,12 @@ void setupException()
 	__NVIC_SetPriority(UsageFault_IRQn, 0x02UL);
 	__NVIC_SetPriority(DebugMonitor_IRQn, 0x03UL);
 	/* System Call, and PendSV for context switch should have lowest priority */
-	__NVIC_SetPriority(SVCall_IRQn, 0x03UL);
+	__NVIC_SetPriority(SVCall_IRQn, 0x04UL);
 	__NVIC_SetPriority(PendSV_IRQn, 0xFFUL);
-	
+	/* Enable System Fault */
+	SCB->SHCSR |= SCB_SHCSR_USGFAULTENA_Msk |
+		SCB_SHCSR_BUSFAULTENA_Msk |
+		SCB_SHCSR_MEMFAULTENA_Msk;
 	setupEXTI();
 
 	__enable_fault_irq();

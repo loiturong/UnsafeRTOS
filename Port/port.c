@@ -43,3 +43,8 @@ uint32_t SysTick_Config(uint32_t freq, uint32_t interval)
 	return 0;
 }
 
+inline __attribute__((always_inline))
+void sys_call()
+{
+	__asm volatile("svc 0\n");
+}
