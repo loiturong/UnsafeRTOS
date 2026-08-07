@@ -19,7 +19,7 @@ typedef struct {
 } stack_t;
 
 void stack_from_array(stack_t *st, uintptr_t *array, size_t size);
-int push_stack(stack_t *st, uintptr_t item);
-void *pop_stack(stack_t *st);
+void push_stack(stack_t *st, uintptr_t item);
+uintptr_t pop_stack(stack_t *st);
 
 #endif /* STACK_H */

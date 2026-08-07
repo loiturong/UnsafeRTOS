@@ -2,7 +2,7 @@
  * @file    : heap_test.c
  * @brief   : test for heap implementation on host mahcine
  *
- * @Author  : Claude, Loiturong
+ * @Author  : Claude
  * @License : 
  */
 
