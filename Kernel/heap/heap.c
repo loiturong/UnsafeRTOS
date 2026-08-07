@@ -67,7 +67,7 @@ void *kalloc(size_t size)
 		}
 		void *pnt = heap_curr->head;
 		heap_curr = heap_curr->next;
-		heap_curr->status != HEAP_USED;
+		heap_curr->status = HEAP_USED;
 		return pnt;
 	}
 

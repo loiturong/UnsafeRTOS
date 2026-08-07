@@ -8,7 +8,17 @@
 
 #include <Port/Include/port.h>
 #include <HAL/Include/hal.h>
-#include <scheduler/scheduler.h>
+#include <scheduler/task.h>
+
+char task_a_stack[32 * 4];
+void task_a(void) {
+	for(;;) {}
+}
+
+char task_b_stack[32 * 4];
+void task_b(void) {
+	for(;;) {}
+}
 
 void kernel_main()
 {
@@ -18,7 +28,13 @@ void kernel_main()
 	// 16MHz, 1ms
 	SysTick_Config(16000000, 10);
 	enable_int();
-	startScheduler();
+	
+	task_create((uintptr_t *)task_a_stack, 32 * 4, (void *)task_a);
+	task_create((uintptr_t *)task_b_stack, 32 * 4, (void *)task_b);
+
+	sys_call();
+
 	while(1);
 }
+
 
