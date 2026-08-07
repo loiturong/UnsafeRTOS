@@ -8,9 +8,9 @@
 
 #include "stack.h"
 
-void init_stack(stack_t *st, uintptr_t *head, size_t size)
+void stack_from_array(stack_t *st, uintptr_t *array, size_t size)
 {
-	uintptr_t *top_stack = (uintptr_t *)((uintptr_t)head + (uintptr_t)size);
+	uintptr_t *top_stack = (uintptr_t *)((uintptr_t)array + (uintptr_t)size);
 	st->top = top_stack;
 	st->pnt = top_stack;
 	st->size = size;

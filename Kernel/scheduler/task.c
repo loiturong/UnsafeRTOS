@@ -6,6 +6,7 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
+#include <heap/heap.h>
 #include "task.h"
 
 struct TaskContext *tasklisthead;
@@ -24,7 +25,7 @@ uintptr_t default_task_stack_array[64];
 stack_t *default_task_stack;
 void tasklist_init()
 {
-	init_stack(default_task_stack, default_task_stack_array, 64);
+	stack_from_array(default_task_stack, default_task_stack_array, 64);
 	
 	default_task_context->next = default_task_context;
 	default_task_context->task_stack = default_task_stack;
@@ -35,14 +36,15 @@ void tasklist_init()
 	tasklistcurr = tasklisthead;
 }
 
-/* Fix this latter
 void task_create(
 	uintptr_t *head,
 	size_t stack_size,
 	uintptr_t *task_entry
 )
 {
-	init_stack(task_stack, head, stack_size);
+	stack_t *task_stack = kalloc(stack_size);
+
+	stack_from_array(task_stack, head, stack_size);
 	
 	struct TaskContext *tsk = {0};
 	tsk->next = tasklisthead;
@@ -51,7 +53,7 @@ void task_create(
 	context_init(task_stack, task_entry);
 	tasklisttail->next = tsk;
 }
-*/
+
 void context_init(stack_t *st, uintptr_t *task_entry)
 {
 	push_stack(st, 0x01000000);		// xPRS
