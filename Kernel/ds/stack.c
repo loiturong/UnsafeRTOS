@@ -31,7 +31,7 @@ int push_stack(stack_t *st, uintptr_t item)
 void *pop_stack(stack_t *st)
 {
 	if((size_t)(st->top - st->pnt) == 0)
-		return (void*)0;
+		return (void*)NULL;
 	
 	void *pnt = st->pnt;
 	st->pnt++;
