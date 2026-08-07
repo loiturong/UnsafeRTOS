@@ -36,10 +36,11 @@ Heap using FreeList Allocator
 
 - ~~Board bring-up phase~~
 - ~~Setup NVIC~~
-- Simple MemoryManagement
+- ~~Simple MemoryManagement (heap)~~
+- ~~Switch from kernel to the first process~~
 - Setup PendSV and SVCall for kernel initialization
 
-Testing on emulation
+Testing on emulatior
 
 ## License
 
