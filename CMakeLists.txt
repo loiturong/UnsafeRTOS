@@ -46,32 +46,8 @@ if(TARGET_QEMU)
     add_compile_definitions(QEMU_BUILD)
 endif()
 
-# project settings
-project(rtos C ASM)
-set(CMAKE_C_STANDARD 11)
-
-# Manual control over source files
-set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(SOURCE_FILES
-	${DIR}/startup.s
-	${DIR}/kernel/kernel.c
-	${DIR}/kernel/task.c
-	${DIR}/kernel/stack.c
-	${DIR}/kernel/scheduler.c
-)
-set(LINKER_SCRIPT ${DIR}/linker.ld)
-
-add_subdirectory(HAL)
-add_subdirectory(Port)
-
-add_executable(${PROJECT_NAME} 
-	${SOURCE_FILES}
-	${LINKER_SCRIPT}
-	$<TARGET_OBJECTS:HAL>
-	$<TARGET_OBJECTS:Port>
-)
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE
+add_library(General_Settings INTERFACE)
+target_compile_definitions(General_Settings INTERFACE
 	ARM_MATH_CM4
 	ARM_MATH_MATRIX_CHECK
 	ARM_MATH_ROUNDING
@@ -80,7 +56,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 	-DSTM32F411xE
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE
+target_compile_options(General_Settings INTERFACE
 	-mcpu=cortex-m4 -mthumb -mthumb-interwork
 	-mfloat-abi=hard -mfpu=fpv4-sp-d16
 	# Warning flags
@@ -97,6 +73,31 @@ target_compile_options(${PROJECT_NAME} PRIVATE
 	# No unaligned access
 	-mno-unaligned-access
 )
+
+# project settings
+project(rtos C ASM)
+set(CMAKE_C_STANDARD 11)
+
+# Manual control over source files
+set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(SOURCE_FILES
+	${DIR}/startup.s
+)
+set(LINKER_SCRIPT ${DIR}/linker.ld)
+
+add_subdirectory(HAL)
+add_subdirectory(Kernel)
+add_subdirectory(Port)
+
+add_executable(${PROJECT_NAME} 
+	${SOURCE_FILES}
+	${LINKER_SCRIPT}
+	$<TARGET_OBJECTS:HAL>
+	$<TARGET_OBJECTS:Kernel>
+	$<TARGET_OBJECTS:Port>
+)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE General_Settings)
 
 target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/

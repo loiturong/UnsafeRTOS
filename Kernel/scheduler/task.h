@@ -11,7 +11,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "stack.h"
+#include <ds/stack.h>
 
 // Linked-list style
 struct TaskContext {

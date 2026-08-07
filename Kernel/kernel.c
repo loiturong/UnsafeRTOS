@@ -8,7 +8,7 @@
 
 #include <Port/Include/port.h>
 #include <HAL/Include/hal.h>
-#include "scheduler.h"
+#include <scheduler/scheduler.h>
 
 void kernel_main()
 {

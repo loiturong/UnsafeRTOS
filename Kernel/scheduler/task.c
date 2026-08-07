@@ -7,7 +7,6 @@
  */
 
 #include "task.h"
-#include "stack.h"
 
 struct TaskContext *tasklisthead;
 struct TaskContext *tasklisttail;
