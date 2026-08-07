@@ -15,11 +15,10 @@
 
 // Linked-list style
 struct TaskContext {
-	stack_t *task_stack;
 	struct TaskContext *next;
+	stack_t task_stack;
 };
 
 void task_create(uintptr_t *head, size_t stack_size, uintptr_t *task_entry);
-void tasklist_init(void);
 
 #endif /* TASK_H */

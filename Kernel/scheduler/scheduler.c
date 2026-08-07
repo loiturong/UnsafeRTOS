@@ -12,6 +12,5 @@
 
 void startScheduler()
 {
-	tasklist_init();
 	sys_call();
 }

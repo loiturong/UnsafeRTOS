@@ -14,24 +14,9 @@ struct TaskContext *tasklisttail;
 struct TaskContext *tasklistcurr;
 static void context_init(stack_t *st, uintptr_t *task_entry);
 
-void default_task(void)
+static void tasklist_init(struct TaskContext *task_context)
 {
-	for(;;);
-}
-
-// Static init
-struct TaskContext *default_task_context;
-uintptr_t default_task_stack_array[64];
-stack_t *default_task_stack;
-void tasklist_init()
-{
-	stack_from_array(default_task_stack, default_task_stack_array, 64);
-	
-	default_task_context->next = default_task_context;
-	default_task_context->task_stack = default_task_stack;
-
-	context_init(default_task_stack, (void *)default_task);
-	tasklisthead = default_task_context;
+	tasklisthead = task_context;
 	tasklisttail = tasklisthead;
 	tasklistcurr = tasklisthead;
 }
@@ -42,16 +27,18 @@ void task_create(
 	uintptr_t *task_entry
 )
 {
-	stack_t *task_stack = kalloc(stack_size);
-
+	struct TaskContext *tsk = kalloc(sizeof(struct TaskContext));
+	stack_t *task_stack = &tsk->task_stack;
 	stack_from_array(task_stack, head, stack_size);
 	
-	struct TaskContext *tsk = {0};
-	tsk->next = tasklisthead;
-	tsk->task_stack = task_stack;
-
 	context_init(task_stack, task_entry);
-	tasklisttail->next = tsk;
+	if(tasklisthead == NULL) {
+		tsk->next = tsk;
+		tasklist_init(tsk);
+	} else {
+		tsk->next = tasklisthead;
+		tasklisttail->next = tsk;
+	}
 }
 
 void context_init(stack_t *st, uintptr_t *task_entry)
