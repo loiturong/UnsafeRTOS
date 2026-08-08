@@ -9,6 +9,7 @@ SVCall_Handler:
 	ldr r0, =tasklisthead	// pointer to tasklist 
 	ldr r0, [r0]		// dereference pointer to tasklist (which is still a pointer) 
 	ldr r0, [r0, 0x08]	// current stack pointer is the third member of tasklist
+	add r0, 0x20		// 8 * 4 = 32 = 0x20
 	msr psp, r0
 
 	/* force EXC_RETURN: thread mode, use PSP */

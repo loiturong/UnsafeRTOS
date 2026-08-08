@@ -49,4 +49,7 @@ void context_init(stack_t *st, uintptr_t *task_entry)
 
 	/* R0, R1, R2, R3, and R12 is "dont' care" value */
 	st->pnt -= 5;
+
+	/* Also preserve space for R4-R11 which will be poped by PendSV on context switch */
+	st->pnt -= 8;
 }
