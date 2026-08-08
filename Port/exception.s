@@ -1,4 +1,5 @@
 .syntax unified
+/* TODO: Adding task state indicating the use of hardware floating point in context swithcing */
 
 .global SVCall_Handler
 .type SVCall_Handler, %function
@@ -33,11 +34,42 @@ SVCall_Handler:
  * to save task context, we can not use push instruction. Instead, we must manually get
  * the PSP from task, save r4-r11 to that pointer, using write operation to address.
  * Then calling scheduler scheme to pick next task, which update tasklistcurrent pointer.
- * Then do the same as SVCall_Handler, load this new stack to PSP, but before running 
- * EXEC_RETURN, we need to now, pop r4-r11 from the stack first. 
- * Which is now raising a problem to task initialization. We must init_context with R4-R11 for all
- * Task, but the first task to be run by SVCall_Handler.
- **/
+ * Then do the same as SVCall_Handler to switch to new task.
+ */
 PendSV_Handler:
+	/* Save current task context */
+	mrs r0, psp
+
+	sub r0,  0x20
+	str r4,  [r0, 0x20]
+	str r5,  [r0, 0x1c]
+	str r6,  [r0, 0x18]
+	str r7,  [r0, 0x14]
+	str r8,  [r0, 0x10]
+	str r9,  [r0, 0x0c]
+	str r10, [r0, 0x08]
+	str r11, [r0, 0x04]
+	
+	/* Switch to new task */
+	ldr r0, =tasklistcurr	// pointer to tasklist 
+	ldr r0, [r0]		// dereference pointer to tasklist (which is still a pointer) 
+	ldr r0, [r0, 0x08]	// current stack pointer is the third member of tasklist
+
+	/* "restore" context of new task */
+	ldr r11, [r0, 0x04]
+	ldr r10, [r0, 0x08]
+	ldr r9,  [r0, 0x0c]
+	ldr r8,  [r0, 0x10]
+	ldr r7,  [r0, 0x14]
+	ldr r6,  [r0, 0x18]
+	ldr r5,  [r0, 0x1c]
+	ldr r4,  [r0, 0x20]
+	add r0, 0x20
+	
+	/* New task stack */
+	msr psp, r0
+	
+	/* EXEC_RETURN */
+	orr lr, lr, 0x0D
 	bx lr
 

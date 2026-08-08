@@ -78,10 +78,11 @@ static void setupEXTI()
 	return;
 }
 
+extern int picknewtask(void);
 void SysTick_Handler(void)
 {
-	// PendSV doing the context switch
-	SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
+	if (picknewtask())
+		SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
 	return;
 }
 

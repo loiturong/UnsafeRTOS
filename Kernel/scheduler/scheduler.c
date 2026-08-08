@@ -14,3 +14,12 @@ void startScheduler()
 {
 	sys_call();
 }
+
+extern struct TaskContext *tasklistcurr;
+int picknewtask()
+{
+	tasklistcurr = tasklistcurr->next;
+	return 1;
+	/* TODO: using some enum state to indicate this fore readability */
+	// return 0;
+}

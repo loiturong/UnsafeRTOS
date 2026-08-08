@@ -10,14 +10,17 @@
 #include <HAL/Include/hal.h>
 #include <scheduler/task.h>
 
+uint32_t counter_a = 0;
+uint32_t counter_b = 0;
+
 char task_a_stack[32 * 4];
 void task_a(void) {
-	for(;;) {}
+	for(;;) { counter_a++; }
 }
 
 char task_b_stack[32 * 4];
 void task_b(void) {
-	for(;;) {}
+	for(;;) { counter_b++; }
 }
 
 void kernel_main()
