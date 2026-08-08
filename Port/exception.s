@@ -50,6 +50,11 @@ PendSV_Handler:
 	str r10, [r0, 0x08]
 	str r11, [r0, 0x04]
 	
+	ldr r1, =tasklistprev	// pointer to tasklist 
+	ldr r1, [r1]		// dereference pointer to tasklist (which is still a pointer) 
+	str r0, [r1, 0x08]	// current stack pointer is the third member of tasklist
+	
+
 	/* Switch to new task */
 	ldr r0, =tasklistcurr	// pointer to tasklist 
 	ldr r0, [r0]		// dereference pointer to tasklist (which is still a pointer) 
@@ -72,4 +77,9 @@ PendSV_Handler:
 	/* EXEC_RETURN */
 	orr lr, lr, 0x0D
 	bx lr
+
+/* literal pool */
+	.balign 4
+.pendsv_literal_pool:
+	.ltorg
 

@@ -12,6 +12,7 @@
 struct TaskContext *tasklisthead;
 struct TaskContext *tasklisttail;
 struct TaskContext *tasklistcurr;
+struct TaskContext *tasklistprev;
 static void context_init(stack_t *st, uintptr_t *task_entry);
 
 static void tasklist_init(struct TaskContext *task_context)
@@ -19,6 +20,7 @@ static void tasklist_init(struct TaskContext *task_context)
 	tasklisthead = task_context;
 	tasklisttail = tasklisthead;
 	tasklistcurr = tasklisthead;
+	tasklistprev = tasklistcurr;
 }
 
 void task_create(

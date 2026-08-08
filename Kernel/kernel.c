@@ -13,12 +13,12 @@
 uint32_t counter_a = 0;
 uint32_t counter_b = 0;
 
-char task_a_stack[32 * 4];
+char task_a_stack[256 * 4];
 void task_a(void) {
 	for(;;) { counter_a++; }
 }
 
-char task_b_stack[32 * 4];
+char task_b_stack[256 * 4];
 void task_b(void) {
 	for(;;) { counter_b++; }
 }

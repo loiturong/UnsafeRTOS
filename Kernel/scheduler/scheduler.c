@@ -16,8 +16,10 @@ void startScheduler()
 }
 
 extern struct TaskContext *tasklistcurr;
+extern struct TaskContext *tasklistprev;
 int picknewtask()
 {
+	tasklistprev = tasklistcurr;
 	tasklistcurr = tasklistcurr->next;
 	return 1;
 	/* TODO: using some enum state to indicate this fore readability */
