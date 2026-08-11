@@ -1,64 +1,44 @@
 cmake_minimum_required(VERSION 4.0)
+project(rtos_kernel C ASM)
 
-# Toolchain
-set(CMAKE_SYSTEM_NAME Generic)
-set(CMAKE_SYSTEM_PROCESSOR arm-none-eabi)
-set(CMAKE_C_COMPILER   arm-none-eabi-gcc)
-set(CMAKE_ASM_COMPILER arm-none-eabi-gcc)
-set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
-# Post build tools
-set(CMAKE_OBJCOPY arm-none-eabi-objcopy)
-set(CMAKE_OBJDUMP arm-none-eabi-objdump)
-set(CMAKE_NM arm-none-eabi-nm)
-
-# Build type and optimization flag
-if (NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
-endif()
-
-if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
-    set(OPT -O2)
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
-    set(OPT -O2 -g)
-elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "MinSizeRel")
-    set(OPT -Os)
-else ()
-    set(OPT -Og -g3 -gdwarf -fno-omit-frame-pointer)
-    #set(AS_OPT -Og -g -gdwarf-5 -fno-omit-frame-pointer)
-endif ()
-message(STATUS "System build type is: ${CMAKE_BUILD_TYPE}")
-
-set(CMAKE_ASM_FLAGS_RELEASE "")
-set(CMAKE_ASM_FLAGS_DEBUG "")
-set(CMAKE_ASM_FLAGS_RELWITHDEBINFO "")
-set(CMAKE_ASM_FLAGS_MINSIZEREL "")
-
-set(CMAKE_C_FLAGS_RELEASE "")
-set(CMAKE_C_FLAGS_DEBUG "")
-set(CMAKE_C_FLAGS_RELWITHDEBINFO "")
-set(CMAKE_C_FLAGS_MINSIZEREL "")
-
-# Build and Test on Qemu
-option(TARGET_QEMU "Build for QEMU emulation instead of real hardware" OFF)
-
-if(TARGET_QEMU)
-    add_compile_definitions(QEMU_BUILD)
-endif()
-
-add_library(General_Settings INTERFACE)
-target_compile_definitions(General_Settings INTERFACE
-	ARM_MATH_CM4
-	ARM_MATH_MATRIX_CHECK
-	ARM_MATH_ROUNDING
-	-DDEBUG 
-	-DUSE_HAL_DRIVER 
-	-DSTM32F411xE
+add_library(${PROJECT_NAME} STATIC
+    exception.c
+    heap.c
+    port.c
+    scheduler.c
+    stack.c
+    task.c
+    exception.s
+    vector_table.s
 )
 
-target_compile_options(General_Settings INTERFACE
-	-mcpu=cortex-m4 -mthumb -mthumb-interwork
-	-mfloat-abi=hard -mfpu=fpv4-sp-d16
+target_include_directories(rtos_kernel
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/Include
+        ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/Include
+	${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/DeviceHeader
+)
+
+set_source_files_properties(
+	exception.s vector_table.s 
+	PROPERTIES LANGUAGE ASM
+)
+
+# TODO: Find a way to tell application to include this
+if(NOT BOARD_FLAGS)
+	set(BOARD_FLAGS 	
+		-mcpu=cortex-m4 -mthumb -mthumb-interwork
+		-mfloat-abi=hard -mfpu=fpv4-sp-d16
+	)
+endif()
+
+if(NOT OPT)
+	set(OPT -Og -g3 -gdwarf -fno-omit-frame-pointer)
+endif()
+
+target_compile_options(${PROJECT_NAME} 
+	PRIVATE
+	${BOARD_FLAGS}
 	# Warning flags
 	-Wall -Werror -Wextra
 	-Wshadow -Wdouble-promotion
@@ -72,57 +52,6 @@ target_compile_options(General_Settings INTERFACE
 	-fno-strict-aliasing -fno-stack-protector
 	# No unaligned access
 	-mno-unaligned-access
-)
-
-# project settings
-project(rtos C ASM)
-set(CMAKE_C_STANDARD 11)
-
-# Manual control over source files
-set(DIR ${CMAKE_CURRENT_SOURCE_DIR})
-set(SOURCE_FILES
-	${DIR}/startup.s
-)
-set(LINKER_SCRIPT ${DIR}/linker.ld)
-
-add_subdirectory(HAL)
-add_subdirectory(Kernel)
-add_subdirectory(Port)
-
-add_executable(${PROJECT_NAME} 
-	${SOURCE_FILES}
-	${LINKER_SCRIPT}
-	$<TARGET_OBJECTS:HAL>
-	$<TARGET_OBJECTS:Kernel>
-	$<TARGET_OBJECTS:Port>
-)
-
-target_link_libraries(${PROJECT_NAME} PRIVATE General_Settings)
-
-target_include_directories(${PROJECT_NAME} PRIVATE
-	${CMAKE_SOURCE_DIR}/
-)
-
-target_link_options(${PROJECT_NAME} PRIVATE
-	-mcpu=cortex-m4 -mthumb -mthumb-interwork
-	-mfloat-abi=hard -mfpu=fpv4-sp-d16
-	-Wl,-gc-sections,--print-memory-usage,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map
-	-T ${LINKER_SCRIPT}
-)
-
-# Build binary for the board
-set(BIN_FILE ${PROJECT_BINARY_DIR}/${PROJECT_NAME}.bin)
-add_custom_command(
-	TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${PROJECT_NAME}> ${BIN_FILE}
-        COMMENT "Building ${BIN_FILE}"
-)
-
-# Debug
-add_custom_command(
-	TARGET ${PROJECT_NAME} POST_BUILD
-	COMMAND ${CMAKE_OBJDUMP} -D $<TARGET_FILE:${PROJECT_NAME}> > $<TARGET_FILE:${PROJECT_NAME}>.asm
-	COMMAND ${CMAKE_OBJDUMP} -h $<TARGET_FILE:${PROJECT_NAME}> > $<TARGET_FILE:${PROJECT_NAME}>.sections
-	COMMAND ${CMAKE_NM} -n -S $<TARGET_FILE:${PROJECT_NAME}> > $<TARGET_FILE:${PROJECT_NAME}>.sym
-	COMMENT "Adding debug information for ${PROJECT_NAME}"
+	# Check for missing headers, to check for prototype mismatch
+	-Wmissing-prototypes
 )

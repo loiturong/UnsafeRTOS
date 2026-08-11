@@ -1,5 +1,5 @@
 .syntax unified
-.thumb
+
 .section .text.exceptions
 
 .type NMI_Handler, %function

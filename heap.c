@@ -31,7 +31,7 @@ typedef struct llst {
 frlst_t *heap_head;
 frlst_t *heap_curr;
 
-void heapinit()
+static void heapinit()
 {
 	char *pnt = (char *)&end_of_data;
 	heap_head = (frlst_t *)pnt;

@@ -7,7 +7,7 @@
  */
 
 #include "task.h"
-#include <Port/Include/port.h>
+#include "port.h"
 #include "scheduler.h"
 
 void startScheduler()
@@ -17,7 +17,8 @@ void startScheduler()
 
 extern struct TaskContext *tasklistcurr;
 extern struct TaskContext *tasklistprev;
-int picknewtask()
+int picknewtask(void);
+int picknewtask(void)
 {
 	tasklistprev = tasklistcurr;
 	tasklistcurr = tasklistcurr->next;
