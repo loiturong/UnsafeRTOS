@@ -6,6 +6,7 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
+#include "portable.h"
 
 //	/*
 //	 * SysTick configuration
@@ -41,7 +42,6 @@
 //		return 0;
 //	}
 
-inline __attribute__((always_inline))
 void sys_call()
 {
 	__asm volatile("svc 0\n");
