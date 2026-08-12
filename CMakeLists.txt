@@ -9,7 +9,6 @@ add_library(${PROJECT_NAME} STATIC
     stack.c
     task.c
     exception.s
-    vector_table.s
 )
 
 target_include_directories(${PROJECT_NAME}
