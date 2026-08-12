@@ -12,21 +12,21 @@ add_library(${PROJECT_NAME} STATIC
     vector_table.s
 )
 
-target_include_directories(rtos_kernel
-    PUBLIC
+target_include_directories(${PROJECT_NAME}
+    	PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/Include
         ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/Include
 	${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/DeviceHeader
 )
 
 set_source_files_properties(
-	exception.s vector_table.s 
+	exception.s
 	PROPERTIES LANGUAGE ASM
 )
 
 # TODO: Find a way to tell application to include this
 if(NOT BOARD_FLAGS)
-	set(BOARD_FLAGS 	
+	set(BOARD_FLAGS
 		-mcpu=cortex-m4 -mthumb -mthumb-interwork
 		-mfloat-abi=hard -mfpu=fpv4-sp-d16
 	)
