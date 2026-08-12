@@ -6,7 +6,6 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-#include "port.h"
 
 //	/*
 //	 * SysTick configuration
