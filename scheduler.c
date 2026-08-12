@@ -7,13 +7,7 @@
  */
 
 #include "task.h"
-#include "port.h"
 #include "scheduler.h"
-
-void startScheduler()
-{
-	sys_call();
-}
 
 extern struct TaskContext *tasklistcurr;
 extern struct TaskContext *tasklistprev;

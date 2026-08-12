@@ -1,21 +1,22 @@
 cmake_minimum_required(VERSION 4.0)
 project(rtos_kernel C ASM)
 
+# TODO: check for ARCH included
+set(ARCH M4)
 add_library(${PROJECT_NAME} STATIC
-    exception.c
     heap.c
-    port.c
     scheduler.c
     stack.c
     task.c
-    exception.s
+    Arch/${ARCH}/port.c
+    Arch/${ARCH}/exception.c
+    Arch/${ARCH}/exception.s
 )
 
 target_include_directories(${PROJECT_NAME}
     	PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/Include
-        ${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/Include
-	${CMAKE_CURRENT_SOURCE_DIR}/CMSIS/DeviceHeader
+	${CMAKE_CURRENT_SOURCE_DIR}/Arch/${ARCH}/Include
 )
 
 set_source_files_properties(
