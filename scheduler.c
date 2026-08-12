@@ -8,6 +8,8 @@
 
 #include "task.h"
 #include "scheduler.h"
+#include "rtos_kernel.h"
+#include "portable.h"
 
 extern struct TaskContext *tasklistcurr;
 extern struct TaskContext *tasklistprev;
@@ -19,4 +21,9 @@ int picknewtask(void)
 	return 1;
 	/* TODO: using some enum state to indicate this fore readability */
 	// return 0;
+}
+
+void kernelstart(void)
+{
+	sys_call();
 }

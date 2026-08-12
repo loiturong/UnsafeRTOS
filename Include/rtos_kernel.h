@@ -13,5 +13,6 @@
 #include <stddef.h>
 
 void task_create(uintptr_t *head, size_t stack_size, uintptr_t *task_entry);
+void kernelstart(void);
 
 #endif /* rtos_kernel_H */

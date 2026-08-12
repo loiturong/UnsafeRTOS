@@ -9,6 +9,6 @@
 #ifndef portable_H
 #define portable_H
 
-inline void sys_call(void);
+void sys_call(void);
 
 #endif /* portable_H */
