@@ -6,15 +6,18 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-void SysTick_Handler(void);
 
+#include <stdint.h>
+
+#define SCB_ICSR		((uintptr_t *)0xE000ED04)
+#define SCB_ICSR_PENDSVSET_Msk	(1 << 28)
+
+void SysTick_Handler(void);
 extern int picknewtask(void);
 void SysTick_Handler(void)
 {
-	/*
 	if (picknewtask())
-		SCB->ICSR |= SCB_ICSR_PENDSVSET_Msk;
-		*/
+		*SCB_ICSR |= SCB_ICSR_PENDSVSET_Msk;
 	return;
 }
 

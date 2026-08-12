@@ -13,7 +13,6 @@ SVCall_Handler:
 	add r0, 0x20		// 8 * 4 = 32 = 0x20
 	msr psp, r0
 
-	/* force EXC_RETURN: thread mode, use PSP */
     	orr lr, lr, 0x0D
 	bx lr
 
@@ -71,10 +70,8 @@ PendSV_Handler:
 	ldr r4,  [r0, 0x20]
 	add r0, 0x20
 	
-	/* New task stack */
 	msr psp, r0
 	
-	/* EXEC_RETURN */
 	orr lr, lr, 0x0D
 	bx lr
 
