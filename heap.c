@@ -1,6 +1,6 @@
 /**
  * @file    : heap.c
- * @brief   : heap to allocate to data to RAM
+ * @brief   : Implement fixed size freelist allocator
  *
  * @Author  : Loiturong
  * @License : GNU GENERAL PUBLIC LICENSE
@@ -10,77 +10,67 @@
 #include <stdio.h>
 #include "heap.h"
 
-#define NUM_OF_BLOCK		10
-#define BLOCK_SIZE		256	// 64 words size
+#define BLOCK_SIZE	128	// 32 words size
+
+#ifndef KHEAP_SIZE
+	#define KHEAP_SIZE	1024 * 8
+#endif
 
 extern char end_of_data[];
 
-typedef enum {
-	HEAP_FREE = 0,
-	HEAP_USED = 1,
-} heap_status_t;
-
-typedef struct llst {
+typedef struct node {
 	uintptr_t *head;
-	size_t bsize;
-	heap_status_t status;
-	struct llst *next;
-	struct llst *prev;
-} frlst_t;
+	struct node *next;
+} freelist_t;
 
-frlst_t *heap_head;
-frlst_t *heap_curr;
+static int heap_status = 0;	// indicate init status
+freelist_t *heap;
+freelist_t *htail;
 
 static void heapinit()
 {
 	char *pnt = (char *)&end_of_data;
-	heap_head = (frlst_t *)pnt;
-	heap_curr = heap_head;
-	frlst_t *block;
-	frlst_t *prev_block = NULL;
+	// First block
+	heap = (freelist_t *)pnt;
+	heap->head = (uintptr_t *)(heap+1);
+	heap->next = NULL;
+	pnt += sizeof(freelist_t) + BLOCK_SIZE;
 
-	for(int i = 0; i < NUM_OF_BLOCK; i++) {
-		block = (frlst_t *)pnt;
+	freelist_t *block;
+	freelist_t *prev = heap;
+
+	for(int i = 0; i < (KHEAP_SIZE / BLOCK_SIZE); i++) {
+		block = (freelist_t *)pnt;
 
 		block->head = (uintptr_t *)(block+1);
-		block->bsize = BLOCK_SIZE;
-		block->prev = prev_block;
-		block->next = NULL;
-		if(block->prev != NULL)
-			block->prev->next = block;
-		prev_block = block;
-		pnt += sizeof(frlst_t) + BLOCK_SIZE;
+		prev->next = block;
+
+		pnt += sizeof(freelist_t) + BLOCK_SIZE;
 	}
+	htail = block;
+	htail->next = NULL;
 }
 
 void *kalloc(size_t size)
 {
-	if (heap_head == NULL)
+	if (heap_status == 0) {
 		heapinit();
-	if ((size == 0) || (size > BLOCK_SIZE))
-		return (void *)NULL;
-	
-	while(heap_curr) {
-		if (heap_curr->status != HEAP_FREE) {
-			heap_curr = heap_curr->next;
-			continue;
-		}
-		void *pnt = heap_curr->head;
-		heap_curr = heap_curr->next;
-		heap_curr->status = HEAP_USED;
-		return pnt;
+		heap_status = 1;
 	}
+	if ((heap == NULL) || (size == 0) || (size > BLOCK_SIZE))
+		return (void *)NULL;
 
-	return (void *)NULL;
+	void *pnt = heap->head;
+	heap = heap->next;
+	return pnt;
 }
 
 void kfree(void *pnt)
 {
 	if (pnt == NULL)
 		return;
-	frlst_t *header = (pnt - sizeof(frlst_t));
-	header->status = HEAP_FREE;
-	heap_curr = header;
-	pnt = NULL;
+	freelist_t *block = (pnt - sizeof(freelist_t));
+	htail->next = block;
+	htail = htail->next;
 }
 
