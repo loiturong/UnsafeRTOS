@@ -9,7 +9,7 @@ SVCall_Handler:
 	
 	ldr r0, =tasklisthead	// pointer to tasklist 
 	ldr r0, [r0]		// dereference pointer to tasklist (which is still a pointer) 
-	ldr r0, [r0, 0x08]	// current stack pointer is the third member of tasklist
+	ldr r0, [r0]		// current stack pointer is now the first member of tasklist
 	add r0, 0x20		// 8 * 4 = 32 = 0x20
 	msr psp, r0
 
@@ -51,13 +51,13 @@ PendSV_Handler:
 	
 	ldr r1, =tasklistprev	// pointer to tasklist 
 	ldr r1, [r1]		// dereference pointer to tasklist (which is still a pointer) 
-	str r0, [r1, 0x08]	// current stack pointer is the third member of tasklist
+	str r0, [r1]		// current stack pointer is now the first member of tasklist
 	
 
 	/* Switch to new task */
 	ldr r0, =tasklistcurr	// pointer to tasklist 
 	ldr r0, [r0]		// dereference pointer to tasklist (which is still a pointer) 
-	ldr r0, [r0, 0x08]	// current stack pointer is the third member of tasklist
+	ldr r0, [r0]		// current stack pointer is now the first member of tasklist
 
 	/* "restore" context of new task */
 	ldr r11, [r0, 0x04]

@@ -13,11 +13,16 @@
 #include <stddef.h>
 #include "stack.h"
 
-// Linked-list style
-struct TaskContext {
-	struct TaskContext *next;
-	stack_t task_stack;
-};
+typedef enum {
+	RUNNIG 	= 1,
+	DONE	= 2,
+} TaskStatus_t;
+
+typedef struct task_node {
+	uintptr_t *task_st;
+	struct task_node *next;
+	TaskStatus_t status; 
+} TaskContext_t;
 
 void task_create(uintptr_t *head, size_t stack_size, uintptr_t *task_entry);
 

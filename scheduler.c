@@ -11,8 +11,8 @@
 #include "rtos_kernel.h"
 #include "portable.h"
 
-extern struct TaskContext *tasklistcurr;
-extern struct TaskContext *tasklistprev;
+extern TaskContext_t *tasklistcurr;
+extern TaskContext_t *tasklistprev;
 int picknewtask(void);
 int picknewtask(void)
 {
