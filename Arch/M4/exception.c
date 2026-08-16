@@ -16,6 +16,9 @@ void SysTick_Handler(void);
 extern int picknewtask(void);
 void SysTick_Handler(void)
 {
+	// PendSV may be preempt by external interrupt
+	if ((*SCB_ICSR & SCB_ICSR_PENDSVSET_Msk) != 0)
+		return;
 	if (picknewtask())
 		*SCB_ICSR |= SCB_ICSR_PENDSVSET_Msk;
 	return;
