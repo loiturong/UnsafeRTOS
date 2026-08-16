@@ -1,5 +1,5 @@
 /**
- * @file    : rtos_kernel.h
+ * @file    : kernel.h
  * @brief   : kernel public api
  *
  * @Author  : Loiturong
@@ -12,7 +12,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
-void task_create(uintptr_t *head, size_t stack_size, uintptr_t *task_entry);
-void kernelstart(void);
+#include "task.h"
+
+task_control_block_t *task_create(uintptr_t *p_array_stack, size_t stack_size, uintptr_t *p_task_entry);
+void kernel_start(void);
 
 #endif /* rtos_kernel_H */

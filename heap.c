@@ -8,13 +8,11 @@
 
 #include <string.h>
 #include <stdio.h>
+
 #include "heap.h"
 
-#define BLOCK_SIZE	128	// 32 words size
-
-#ifndef KHEAP_SIZE
-	#define KHEAP_SIZE	1024 * 8
-#endif
+#define HEAP_BLOCK_SIZE		128	// 32 words size
+#define HEAP_POOL_SIZE	1024 * 8
 
 extern char end_of_data[];
 
@@ -24,31 +22,31 @@ typedef struct node {
 } freelist_t;
 
 static int heap_status = 0;	// indicate init status
-freelist_t *heap;
-freelist_t *htail;
+static freelist_t *p_heap;
+static freelist_t *p_heap_end;
 
 static void heapinit()
 {
 	char *pnt = (char *)&end_of_data;
 	// First block
-	heap = (freelist_t *)pnt;
-	heap->head = (uintptr_t *)(heap+1);
-	heap->next = NULL;
-	pnt += sizeof(freelist_t) + BLOCK_SIZE;
+	p_heap = (freelist_t *)pnt;
+	p_heap->head = (uintptr_t *)(p_heap + 1);
+	p_heap->next = NULL;
+	pnt += sizeof(freelist_t) + HEAP_BLOCK_SIZE;
 
 	freelist_t *block;
-	freelist_t *prev = heap;
+	freelist_t *prev = p_heap;
 
-	for(int i = 0; i < (KHEAP_SIZE / BLOCK_SIZE); i++) {
+	for(int i = 0; i < (HEAP_POOL_SIZE / HEAP_BLOCK_SIZE); i++) {
 		block = (freelist_t *)pnt;
 
 		block->head = (uintptr_t *)(block+1);
 		prev->next = block;
 
-		pnt += sizeof(freelist_t) + BLOCK_SIZE;
+		pnt += sizeof(freelist_t) + HEAP_BLOCK_SIZE;
 	}
-	htail = block;
-	htail->next = NULL;
+	p_heap_end = block;
+	p_heap_end->next = NULL;
 }
 
 void *kalloc(size_t size)
@@ -57,11 +55,11 @@ void *kalloc(size_t size)
 		heapinit();
 		heap_status = 1;
 	}
-	if ((heap == NULL) || (size == 0) || (size > BLOCK_SIZE))
+	if ((p_heap == NULL) || (size == 0) || (size > HEAP_BLOCK_SIZE))
 		return (void *)NULL;
 
-	void *pnt = heap->head;
-	heap = heap->next;
+	void *pnt = p_heap->head;
+	p_heap = p_heap->next;
 	return pnt;
 }
 
@@ -69,8 +67,8 @@ void kfree(void *pnt)
 {
 	if (pnt == NULL)
 		return;
-	freelist_t *block = (pnt - sizeof(freelist_t));
-	htail->next = block;
-	htail = htail->next;
+	freelist_t *p_block = (pnt - sizeof(freelist_t));
+	p_heap_end->next = p_block;
+	p_heap_end = p_heap_end->next;
 }
 

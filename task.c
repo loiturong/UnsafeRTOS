@@ -6,42 +6,52 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-#include "heap.h"
+#include "kernel.h"
+
 #include "task.h"
+#include "heap.h"
+#include "stack.h"
 
-TaskContext_t *tasklisthead;
-TaskContext_t *tasklistcurr;
-TaskContext_t *tasklistprev;
+task_control_block_t *g_p_first_task;
+task_control_block_t *g_p_curr_task;
+task_control_block_t *g_p_prev_task;
 
-static uintptr_t *context_init(uintptr_t *st, uintptr_t *task_entry);
+static inline uintptr_t *context_init(uintptr_t *st, uintptr_t *p_task_entry);
+static inline void tasklist_init(task_control_block_t *p_task);
 
-static void tasklist_init(TaskContext_t *task_context)
+task_control_block_t *task_create(
+	uintptr_t *p_array_stack, 
+	size_t stack_size, 
+	uintptr_t *p_task_entry
+)
 {
-	tasklisthead = task_context;
-	tasklistcurr = tasklisthead;
-	tasklistprev = tasklistcurr;
-}
-
-void task_create(uintptr_t *head, size_t stack_size, uintptr_t *task_entry)
-{
-	TaskContext_t *tsk = kalloc(sizeof(TaskContext_t));
-	tsk->task_st = stack_from_array_v2(head, stack_size);
+	task_control_block_t *p_task = kalloc(sizeof(task_control_block_t));
+	p_task->task_st = stack_create(p_array_stack, stack_size);
 	
-	tsk->task_st = context_init(tsk->task_st, task_entry);
-	if(tasklisthead == NULL) {
-		tsk->next = tsk;
-		tasklist_init(tsk);
+	p_task->task_st = context_init(p_task->task_st, p_task_entry);
+	if(g_p_first_task == NULL) {
+		p_task->next = p_task;
+		tasklist_init(p_task);
 	} else {
-		tsk->next = tasklisthead;
-		tasklistprev->next = tsk;
-		tasklistprev = tsk;
+		p_task->next = g_p_first_task;
+		g_p_prev_task->next = p_task;
+		g_p_prev_task = p_task;
 	}
+
+	return p_task;
 }
 
-uintptr_t *context_init(uintptr_t *st, uintptr_t *task_entry)
+static inline void tasklist_init(task_control_block_t *p_task)
+{
+	g_p_first_task = p_task;
+	g_p_curr_task = g_p_first_task;
+	g_p_prev_task = g_p_curr_task;
+}
+
+uintptr_t *context_init(uintptr_t *st, uintptr_t *p_task_entry)
 {
 	*(--st) = 0x01000000;			// xPRS
-	*(--st) = (uintptr_t)task_entry;	// PC
+	*(--st) = (uintptr_t)p_task_entry;	// PC
 	*(--st) = 0x00000000;			// LR (a task return would cause Busfault here)
 
 	/* R0, R1, R2, R3, and R12 is "dont' care" value */

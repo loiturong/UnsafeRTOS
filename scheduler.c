@@ -6,30 +6,35 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-#include "task.h"
+#include "kernel.h"
+
 #include "scheduler.h"
-#include "rtos_kernel.h"
+#include "task.h"
+
 #include "portable.h"
 
-extern TaskContext_t *tasklistcurr;
-extern TaskContext_t *tasklistprev;
+extern task_control_block_t *g_p_curr_task;
+extern task_control_block_t *g_p_prev_task;
+
+static int s_counter = 0;
 int picknewtask(void);
 
 int picknewtask(void)
 {
-	int counter = 0;
-	while((tasklistcurr->next->status != RUNNING) && (counter++ < 100)) {
-		tasklistprev = tasklistcurr;
-		tasklistcurr = tasklistcurr->next;
-	}
-	if (counter >= 100)
+	if (s_counter >= 100)
 		return 0;
-	tasklistprev = tasklistcurr;
-	tasklistcurr = tasklistcurr->next;
+	s_counter = 0;
+
+	while((g_p_curr_task->next->status != RUNNING) && (s_counter++ < 100)) {
+		g_p_prev_task = g_p_curr_task;
+		g_p_curr_task = g_p_curr_task->next;
+	}
+	g_p_prev_task = g_p_curr_task;
+	g_p_curr_task = g_p_curr_task->next;
 	return 1;
 }
 
-void kernelstart(void)
+void kernel_start(void)
 {
 	sys_call();
 }

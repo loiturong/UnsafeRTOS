@@ -23,6 +23,7 @@ Desktop.ini
 
 # Markdown document template
 *.md.tmp
+NAMING.md
 
 # Debug tool
 .gdbinit

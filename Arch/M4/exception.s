@@ -7,7 +7,7 @@ SVCall_Handler:
 	/* Save kernel context, don't know if need this yet */
 	// push {R4-R11}
 	
-	ldr r0, =tasklisthead	// pointer to tasklist 
+	ldr r0, =g_p_first_task	// pointer to first task control block 
 	ldr r0, [r0]		// dereference pointer to tasklist (which is still a pointer) 
 	ldr r0, [r0]		// current stack pointer is now the first member of tasklist
 	add r0, 0x20		// 8 * 4 = 32 = 0x20
@@ -49,13 +49,13 @@ PendSV_Handler:
 	str r10, [r0, 0x08]
 	str r11, [r0, 0x04]
 	
-	ldr r1, =tasklistprev	// pointer to tasklist 
+	ldr r1, =g_p_prev_task	// pointer to tasklist 
 	ldr r1, [r1]		// dereference pointer to tasklist (which is still a pointer) 
 	str r0, [r1]		// current stack pointer is now the first member of tasklist
 	
 
 	/* Switch to new task */
-	ldr r0, =tasklistcurr	// pointer to tasklist 
+	ldr r0, =g_p_curr_task	// pointer to tasklist 
 	ldr r0, [r0]		// dereference pointer to tasklist (which is still a pointer) 
 	ldr r0, [r0]		// current stack pointer is now the first member of tasklist
 

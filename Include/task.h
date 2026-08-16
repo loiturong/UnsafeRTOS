@@ -11,19 +11,16 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "stack.h"
 
 typedef enum {
 	RUNNING 	= 1,
 	DONE		= 2,
-} TaskStatus_t;
+} task_status_t;
 
 typedef struct task_node {
 	uintptr_t *task_st;
 	struct task_node *next;
-	TaskStatus_t status; 
-} TaskContext_t;
-
-void task_create(uintptr_t *head, size_t stack_size, uintptr_t *task_entry);
+	task_status_t status; 
+} task_control_block_t;
 
 #endif /* TASK_H */
