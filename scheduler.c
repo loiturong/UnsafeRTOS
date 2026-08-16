@@ -14,13 +14,19 @@
 extern TaskContext_t *tasklistcurr;
 extern TaskContext_t *tasklistprev;
 int picknewtask(void);
+
 int picknewtask(void)
 {
+	int counter = 0;
+	while((tasklistcurr->next->status != RUNNING) && (counter++ < 100)) {
+		tasklistprev = tasklistcurr;
+		tasklistcurr = tasklistcurr->next;
+	}
+	if (counter >= 100)
+		return 0;
 	tasklistprev = tasklistcurr;
 	tasklistcurr = tasklistcurr->next;
 	return 1;
-	/* TODO: using some enum state to indicate this fore readability */
-	// return 0;
 }
 
 void kernelstart(void)

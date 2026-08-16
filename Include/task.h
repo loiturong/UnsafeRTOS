@@ -14,8 +14,8 @@
 #include "stack.h"
 
 typedef enum {
-	RUNNIG 	= 1,
-	DONE	= 2,
+	RUNNING 	= 1,
+	DONE		= 2,
 } TaskStatus_t;
 
 typedef struct task_node {
