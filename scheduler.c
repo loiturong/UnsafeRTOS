@@ -13,11 +13,23 @@
 
 #include "portable.h"
 
-extern task_control_block_t *g_p_curr_task;
-extern task_control_block_t *g_p_prev_task;
+/* Global Object */
+
+extern struct task_control_block_t *g_p_curr_task;
+extern struct task_control_block_t *g_p_prev_task;
+
+/* Static Object */
 
 static int s_counter = 0;
-int picknewtask(void);
+
+/* Kernel Public API */
+
+void kernel_start(void)
+{
+	sys_call();
+}
+
+/* Kernel Public Internal API */
 
 int picknewtask(void)
 {
@@ -34,7 +46,4 @@ int picknewtask(void)
 	return 1;
 }
 
-void kernel_start(void)
-{
-	sys_call();
-}
+

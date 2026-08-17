@@ -9,11 +9,15 @@
 
 #include <stdint.h>
 
+#include "exception.h"
+
+#include "scheduler.h"
+
 #define SCB_ICSR		((uintptr_t *)0xE000ED04)
 #define SCB_ICSR_PENDSVSET_Msk	(1 << 28)
 
 void SysTick_Handler(void);
-extern int picknewtask(void);
+
 void SysTick_Handler(void)
 {
 	// PendSV may be preempt by external interrupt

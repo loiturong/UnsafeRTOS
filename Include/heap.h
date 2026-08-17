@@ -1,6 +1,6 @@
 /**
  * @file    : heap.h
- * @brief   : Public API
+ * @brief   : Memory Allocator, implemented as fixed-size free list.
  *
  * @Author  : Loiturong
  * @License : GNU GENERAL PUBLIC LICENSE

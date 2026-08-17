@@ -1,6 +1,6 @@
 /**
  * @file    : portable.h
- * @brief   : 
+ * @brief   : Architecture Portable API
  *
  * @Author  : Loiturong
  * @License : GNU GENERAL PUBLIC LICENSE

@@ -9,4 +9,6 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
+int picknewtask(void);
+
 #endif /* SCHEDULER_H */

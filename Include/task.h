@@ -1,6 +1,6 @@
 /**
  * @file    : task.h
- * @brief   : task create, allocate
+ * @brief   : task create, manipulation
  *
  * @Author  : Loiturong
  * @License : GNU GENERAL PUBLIC LICENSE
@@ -17,10 +17,10 @@ typedef enum {
 	DONE		= 2,
 } task_status_t;
 
-typedef struct task_node {
+struct task_control_block_t {
 	uintptr_t *task_st;
-	struct task_node *next;
+	struct task_control_block_t *next;
 	task_status_t status; 
-} task_control_block_t;
+};
 
 #endif /* TASK_H */

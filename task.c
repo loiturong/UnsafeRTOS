@@ -12,43 +12,51 @@
 #include "heap.h"
 #include "stack.h"
 
-task_control_block_t *g_p_first_task;
-task_control_block_t *g_p_curr_task;
-task_control_block_t *g_p_prev_task;
+/* Static function Declaration */
 
-static inline uintptr_t *context_init(uintptr_t *st, uintptr_t *p_task_entry);
-static inline void tasklist_init(task_control_block_t *p_task);
+static inline uintptr_t *task__init_context(uintptr_t *st, uintptr_t *p_task_entry);
+static inline void task__init_task_list(struct task_control_block_t *p_task);
 
-task_control_block_t *task_create(
+/* Global Object Declaration */
+
+struct task_control_block_t *g_p_first_task;
+struct task_control_block_t *g_p_curr_task;
+struct task_control_block_t *g_p_prev_task;
+
+/* Kernel Public API Implementation */
+
+task_handle_t task_create(
 	uintptr_t *p_array_stack, 
 	size_t stack_size, 
 	uintptr_t *p_task_entry
 )
 {
-	task_control_block_t *p_task = kalloc(sizeof(task_control_block_t));
+	struct task_control_block_t *p_task = kalloc(sizeof(struct task_control_block_t));
 	p_task->task_st = stack_create(p_array_stack, stack_size);
 	
-	p_task->task_st = context_init(p_task->task_st, p_task_entry);
+	p_task->task_st = task__init_context(p_task->task_st, p_task_entry);
 	if(g_p_first_task == NULL) {
 		p_task->next = p_task;
-		tasklist_init(p_task);
+		task__init_task_list(p_task);
 	} else {
 		p_task->next = g_p_first_task;
 		g_p_prev_task->next = p_task;
 		g_p_prev_task = p_task;
 	}
 
-	return p_task;
+	return (task_handle_t)p_task;
 }
 
-static inline void tasklist_init(task_control_block_t *p_task)
+/* Static Function */ 
+
+void task__init_task_list(struct task_control_block_t *p_task)
 {
 	g_p_first_task = p_task;
 	g_p_curr_task = g_p_first_task;
 	g_p_prev_task = g_p_curr_task;
 }
 
-uintptr_t *context_init(uintptr_t *st, uintptr_t *p_task_entry)
+uintptr_t *task__init_context(uintptr_t *st, uintptr_t *p_task_entry)
 {
 	*(--st) = 0x01000000;			// xPRS
 	*(--st) = (uintptr_t)p_task_entry;	// PC

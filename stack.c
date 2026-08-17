@@ -8,7 +8,9 @@
 
 #include "stack.h"
 
-inline uintptr_t *stack_create(uintptr_t *p_array_head, size_t size)
+/* Kernel Public Internal API */
+
+uintptr_t *stack_create(uintptr_t *p_array_head, size_t size)
 {
 	return p_array_head + size;
 }
