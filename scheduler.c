@@ -1,6 +1,6 @@
 /**
  * @file    : scheduler.c
- * @brief   : scheduler
+ * @brief   : round-robin scheduler
  *
  * @Author  : Loiturong
  * @License : GNU GENERAL PUBLIC LICENSE
@@ -13,7 +13,6 @@
 
 /* -------- Include: Kernel Modules Include     -------- */
 #include "scheduler.h"
-#include "task.h"
 
 #include "portable.h"
 
@@ -21,22 +20,18 @@
 
 /* -------- 		  Types             	-------- */
 typedef struct node_t {
+	struct task_control_block_t *p_tcb;
 	struct node_t *next;
-	struct task_control_block_t *tcb;
 } node_t;
 
 /* -------- Objects:     Global Object          -------- */
-extern struct task_control_block_t *g_p_curr_task;
-extern struct task_control_block_t *g_p_prev_task;
-
-struct task_control_block_t *g_p_first_task;
-struct task_control_block_t *g_p_curr_task;
-struct task_control_block_t *g_p_prev_task;
-
+node_t *g_p_list_head;
 node_t *g_p_list_tail;
 
+node_t *g_p_task_current;
+node_t *g_p_task_next;
+
 /* -------- Objects:     Static Obejct          -------- */
-static int s_counter = 0;
 
 /* -------- Function:   Static Function         -------- */
 
@@ -49,29 +44,31 @@ void kernel_start(void)
 /* -------- Function: Public Internal API       -------- */
 int scheduler_pick_new_task(void)
 {
-	if (s_counter >= 100)
-		return 0;
-	s_counter = 0;
 
-	while((g_p_curr_task->next->status != RUNNING) && (s_counter++ < 100)) {
-		g_p_prev_task = g_p_curr_task;
-		g_p_curr_task = g_p_curr_task->next;
+	while((g_p_task_next->p_tcb->status != RUNNING)) {
+		g_p_task_current = g_p_task_next;
+		g_p_task_next = g_p_task_next->next;
 	}
-	g_p_prev_task = g_p_curr_task;
-	g_p_curr_task = g_p_curr_task->next;
+
+	g_p_task_current = g_p_task_next;
+	g_p_task_next = g_p_task_next->next;
 	return 1;
 }
 
-void scheduler_register_task()
+void scheduler_register_task(struct task_control_block_t *p_task)
 {
-	if(g_p_first_task == NULL) {
-		p_task->next = p_task;
-		task__init_task_list(p_task);
-	} else {
-		p_task->next = g_p_first_task;
-		g_p_prev_task->next = p_task;
-		g_p_prev_task = p_task;
+	node_t *p_task_node = kalloc(sizeof(node_t));
+	p_task_node->p_tcb = p_task;
+	
+	if(g_p_list_head == NULL) {
+		g_p_list_head = p_task_node;
+		g_p_list_tail = g_p_list_head;
+		return;
 	}
+
+	g_p_list_tail->next = p_task_node;
+	p_task_node->next = g_p_list_head;
+	g_p_list_tail = p_task_node;
 	return;
 }
 

@@ -13,6 +13,7 @@
 
 /* -------- Include: Kernel Modules Include     -------- */
 #include "task.h"
+#include "scheduler.h"
 #include "heap.h"
 #include "stack.h"
 
@@ -36,10 +37,10 @@ task_handle_t task_create(
 {
 	struct task_control_block_t *p_task = kalloc(sizeof(struct task_control_block_t));
 	p_task->task_st = stack_create(p_array_stack, stack_size);
-	
 	p_task->task_st = task__init_context(p_task->task_st, p_task_entry);
+	p_task->status = RUNNING;
 	
-	// Call scheduler register...
+	scheduler_register_task(p_task);
 
 	return (task_handle_t)p_task;
 }

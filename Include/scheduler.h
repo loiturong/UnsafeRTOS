@@ -12,9 +12,11 @@
 /* -------- Include: Compiler Static Library    -------- */
 
 /* -------- Include:   Public API Include       -------- */
+#include "heap.h"
+#include "task.h"
 
 /* -------- Include: Kernel Modules Include     -------- */
-void scheduler_register_task(void);
+void scheduler_register_task(struct task_control_block_t *p_task);
 int scheduler_pick_new_task(void);
 
 /* -------- 		  Types             	-------- */
