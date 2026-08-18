@@ -9,6 +9,6 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
-int picknewtask(void);
+int scheduler_pick_new_task(void);
 
 #endif /* SCHEDULER_H */

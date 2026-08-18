@@ -37,7 +37,7 @@ void kernel_start(void)
 
 /* Kernel Public Internal API */
 
-int picknewtask(void)
+int scheduler_pick_new_task(void)
 {
 	if (s_counter >= 100)
 		return 0;
