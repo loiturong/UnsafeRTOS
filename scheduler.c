@@ -13,6 +13,12 @@
 
 #include "portable.h"
 
+/* Data Structure */
+typedef struct node {
+	struct node *next;
+	struct task_control_block_t tcb;
+} scheduler_list_t;
+
 /* Global Object */
 
 extern struct task_control_block_t *g_p_curr_task;

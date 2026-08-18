@@ -9,8 +9,6 @@
 
 #include <stdint.h>
 
-#include "exception.h"
-
 #include "scheduler.h"
 
 #define SCB_ICSR		((uintptr_t *)0xE000ED04)
