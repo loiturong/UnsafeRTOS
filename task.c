@@ -6,25 +6,28 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
+/* -------- Include: Compiler Static Library    -------- */
+
+/* -------- Include:   Public API Include       -------- */
 #include "kernel.h"
 
+/* -------- Include: Kernel Modules Include     -------- */
 #include "task.h"
 #include "heap.h"
 #include "stack.h"
 
-/* Static function Declaration */
+/* -------- 		  Define             	-------- */
 
+/* -------- 		  Types             	-------- */
+
+/* -------- Objects:     Global Object          -------- */
+
+/* -------- Objects:     Static Obejct          -------- */
+
+/* -------- Function:   Static Function         -------- */
 static inline uintptr_t *task__init_context(uintptr_t *st, uintptr_t *p_task_entry);
-static inline void task__init_task_list(struct task_control_block_t *p_task);
 
-/* Global Object Declaration */
-
-struct task_control_block_t *g_p_first_task;
-struct task_control_block_t *g_p_curr_task;
-struct task_control_block_t *g_p_prev_task;
-
-/* Kernel Public API Implementation */
-
+/* -------- Function:      Public API           -------- */
 task_handle_t task_create(
 	uintptr_t *p_array_stack, 
 	size_t stack_size, 
@@ -35,27 +38,14 @@ task_handle_t task_create(
 	p_task->task_st = stack_create(p_array_stack, stack_size);
 	
 	p_task->task_st = task__init_context(p_task->task_st, p_task_entry);
-	if(g_p_first_task == NULL) {
-		p_task->next = p_task;
-		task__init_task_list(p_task);
-	} else {
-		p_task->next = g_p_first_task;
-		g_p_prev_task->next = p_task;
-		g_p_prev_task = p_task;
-	}
+	
+	// Call scheduler register...
 
 	return (task_handle_t)p_task;
 }
+/* -------- Function: Public Internal API       -------- */
 
-/* Static Function */ 
-
-void task__init_task_list(struct task_control_block_t *p_task)
-{
-	g_p_first_task = p_task;
-	g_p_curr_task = g_p_first_task;
-	g_p_prev_task = g_p_curr_task;
-}
-
+/* -------- Function: Static Implementation     -------- */
 uintptr_t *task__init_context(uintptr_t *st, uintptr_t *p_task_entry)
 {
 	*(--st) = 0x01000000;			// xPRS

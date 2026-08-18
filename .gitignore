@@ -16,6 +16,10 @@ build/
 compile_commands.json
 *.swp
 
+# my template for c/h source
+.nvim-c-template
+.nvim-h-template
+
 # OS generated files
 .DS_Store
 Thumbs.db

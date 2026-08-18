@@ -6,35 +6,39 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
+/* -------- Include: Compiler Static Library    -------- */
 #include <string.h>
 #include <stdio.h>
 
+/* -------- Include:   Public API Include       -------- */
+
+/* -------- Include: Kernel Modules Include     -------- */
 #include "heap.h"
 
+/* -------- 		  Define             	-------- */
 #define HEAP_BLOCK_SIZE		128
 #define HEAP_POOL_SIZE		1024 * 8
 
+/* -------- 		  Types             	-------- */
 typedef struct node {
 	uintptr_t *head;
 	struct node *next;
 } freelist_t;
 
-/* Global Object */
+/* -------- Objects:     Global Object          -------- */
 
+/* -------- Objects:     Static Obejct          -------- */
 extern char end_of_data[];
-
-/* Static Object */
-
 static int heap_status = 0;	// TODO: try other way initialzing
 static freelist_t *p_heap;
 static freelist_t *p_heap_end;
 
-/* Static Function */
-
+/* -------- Function:   Static Function         -------- */
 static void heapinit(void);
 
-/* Kernel Public Internal API */
+/* -------- Function:      Public API           -------- */
 
+/* -------- Function: Public Internal API       -------- */
 void *kalloc(size_t size)
 {
 	if (heap_status == 0) {
@@ -58,8 +62,8 @@ void kfree(void *pnt)
 	p_heap_end = p_heap_end->next;
 }
 
-/* Static Function */
 
+/* -------- Function: Static Implementation     -------- */
 void heapinit(void)
 {
 	char *pnt = (char *)&end_of_data;
