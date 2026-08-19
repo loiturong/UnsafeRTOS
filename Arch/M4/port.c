@@ -1,11 +1,52 @@
 /**
  * @file    : port.c
- * @brief   : ARM specific
+ * @brief   : Architecture specific code
  *
  * @Author  : Loiturong
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
+/* -------- Include: Compiler Static Library    -------- */
 #include <stdint.h>
 
+/* -------- Include:   Public API Include       -------- */
+int scheduler_pick_new_task(void);
+
+/* -------- Include: Kernel Modules Include     -------- */
 #include "portable.h"
+
+/* -------- 		  Define             	-------- */
+#define SCB_ICSR		((uintptr_t *)0xE000ED04)
+#define SCB_ICSR_PENDSVSET_Msk	(1 << 28)
+#define SET_PENDSV_BIT()	do { *SCB_ICSR |= SCB_ICSR_PENDSVSET_Msk; } while(0)
+
+/* -------- 		  Types             	-------- */
+
+/* -------- Objects:     Global Object          -------- */
+
+/* -------- Objects:     Static Obejct          -------- */
+
+/* -------- Function:   Static Function         -------- */
+
+/* -------- Function:      Public API           -------- */
+
+/* -------- Function: Public Internal API       -------- */
+void SysTick_Handler(void)
+{
+	// PendSV may be preempt by external interrupt
+	if ((*SCB_ICSR & SCB_ICSR_PENDSVSET_Msk) != 0)
+		return;
+	if (scheduler_pick_new_task())
+		SET_PENDSV_BIT();
+	return;
+}
+
+void syscall_task_yield(void)
+{
+	if (scheduler_pick_new_task())
+		SET_PENDSV_BIT();
+	return;
+}
+
+/* -------- Function: Static Implementation     -------- */
+
