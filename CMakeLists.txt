@@ -3,27 +3,29 @@ project(rtos_kernel C ASM)
 
 # TODO: check for ARCH included
 set(ARCH M4)
+
+file(GLOB 
+	k_srcs
+	CONFIGURE_DEPENDS
+	*.c
+	*.s
+)
+file(GLOB 
+	a_srcs
+	CONFIGURE_DEPENDS
+	Arch/${ARCH}/*.c
+	Arch/${ARCH}/*.s
+)
+
 add_library(${PROJECT_NAME} STATIC
-    heap.c
-    scheduler.c
-    stack.c
-    task.c
-    syscall.c
-    Arch/${ARCH}/port.c
-    Arch/${ARCH}/exception.c
-    Arch/${ARCH}/exception.s
-    Arch/${ARCH}/syscall.s
+	${k_srcs}
+	${a_srcs}
 )
 
 target_include_directories(${PROJECT_NAME}
     	PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/Include
 	${CMAKE_CURRENT_SOURCE_DIR}/Arch/${ARCH}/Include
-)
-
-set_source_files_properties(
-	exception.s
-	PROPERTIES LANGUAGE ASM
 )
 
 # TODO: Find a way to tell application to include this
@@ -55,5 +57,11 @@ target_compile_options(${PROJECT_NAME}
 	# No unaligned access
 	-mno-unaligned-access
 	# Check for missing headers, to check for prototype mismatch
-	-Wmissing-prototypes
+	
+)
+
+# Arch includes some codes that only get run by hardware
+set_source_files_properties(${k_srcs} PROPERTIES
+	COMPILE_OPTIONS
+	"-Wmissing-prototypes"
 )
