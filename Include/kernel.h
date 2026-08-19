@@ -21,7 +21,7 @@
 
 /* -------- 		  Define             	-------- */
 #define WORD_SIZE(x)			(x * 4)
-#define TASK_CONTROL_BLOCK_SIZE		WORD_SIZE(3)
+#define TASK_CONTROL_BLOCK_SIZE		WORD_SIZE(4)
 #define SCHEDULER_BLOCK_SIZE		WORD_SIZE(2)
 
 /* -------- 		  Types             	-------- */
@@ -43,6 +43,7 @@ typedef struct {
 task_handle_t task_create(uintptr_t *p_array_stack, size_t stack_size, uintptr_t *p_task_entry);
 task_handle_t task_create_static(kernel_block_t *p_task_block, uintptr_t *p_array_stack, 
 		size_t stack_size, uintptr_t *p_task_entry);
+void task_delay_tick(struct task_control_block_t *p_task, uint32_t ticks);
 void kernel_start(void);
 
 /* -------- Function: Static Implementation     -------- */

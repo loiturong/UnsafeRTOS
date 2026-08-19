@@ -17,6 +17,7 @@
 
 /* -------- 		  Define             	-------- */
 #define KERNEL_START		0x00
+#define TASK_YIELD		0x01
 
 /* -------- 		  Types             	-------- */
 
