@@ -26,18 +26,11 @@ exec:
 	ldr r0, =syscall_table
 	lsl r1, r1, 0x02
 	ldr r0, [r0, r1]
-
-	cmp r1, 0x00		// KERNEL_START code
-	beq kernel_start_code
-
-	/* Save kernel context, don't know if need this yet */
-	push {r4-r11, lr}
+	
+	push {lr}
 	blx r0
-	pop {r4-r11, lr}
+	pop {lr}
 	bx lr
-
-kernel_start_code:
-	bx  r0
 
 /* literal pool */
 	.balign 4

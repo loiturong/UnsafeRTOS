@@ -26,7 +26,12 @@
 /* -------- Function:   Static Function         -------- */
 
 /* -------- Function:      Public API           -------- */
-void kernel_start() { SYS_CALL(KERNEL_START); }
+void kernel_start() 
+{ 
+	// Syscall is expected to return, so put an infinte loop here to wait for systick
+	SYS_CALL(KERNEL_START);
+	while (1);
+}
 
 /* -------- Function: Public Internal API       -------- */
 
