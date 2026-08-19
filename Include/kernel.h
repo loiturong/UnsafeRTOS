@@ -39,6 +39,7 @@ typedef struct {
 /* -------- Function:      Public API           -------- */
 void task_create_static(kernel_handle_t *p_task_block, uintptr_t *p_array_stack, 
 		size_t stack_size, uintptr_t *p_task_entry);
+void scheduler_add_delayed_task(kernel_handle_t *p_tsk, uint32_t ticks);
 
 // Syscall API
 void kernel_start(void);
