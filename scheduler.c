@@ -19,19 +19,18 @@
 /* -------- 		  Define             	-------- */
 
 /* -------- 		  Types             	-------- */
-typedef struct node_t {
-	struct task_control_block_t *p_tcb;
-	struct node_t *next;
-} node_t;
+struct {
+	node_t *p_head;
+	node_t *p_tail;
+} list_t;
 
 /* -------- Objects:     Global Object          -------- */
-node_t *g_p_list_head;
-node_t *g_p_list_tail;
-
 node_t *g_p_task_current;
 node_t *g_p_task_next;
 
 /* -------- Objects:     Static Obejct          -------- */
+node_t *s_p_list_head;
+node_t *s_p_list_tail;
 
 /* -------- Function:   Static Function         -------- */
 
@@ -51,15 +50,15 @@ void scheduler_register_task(struct task_control_block_t *p_task)
 	node_t *p_task_node = kalloc(sizeof(node_t));
 	p_task_node->p_tcb = p_task;
 	
-	if(g_p_list_head == NULL) {
-		g_p_list_head = p_task_node;
-		g_p_list_tail = g_p_list_head;
+	if(s_p_list_head == NULL) {
+		s_p_list_head = p_task_node;
+		s_p_list_tail = s_p_list_head;
 		return;
 	}
 
-	g_p_list_tail->next = p_task_node;
-	p_task_node->next = g_p_list_head;
-	g_p_list_tail = p_task_node;
+	s_p_list_tail->next = p_task_node;
+	p_task_node->next = s_p_list_head;
+	s_p_list_tail = p_task_node;
 	return;
 }
 
@@ -75,17 +74,17 @@ void scheduler_register_task_static(
 
 	p_task_node->p_tcb = p_task;
 	
-	if(g_p_list_head == NULL) {
-		g_p_list_head = p_task_node;
-		g_p_list_tail = g_p_list_head;
-		g_p_task_current = g_p_list_head;
-		g_p_task_next = g_p_list_head;
+	if(s_p_list_head == NULL) {
+		s_p_list_head = p_task_node;
+		s_p_list_tail = s_p_list_head;
+		g_p_task_current = s_p_list_head;
+		g_p_task_next = s_p_list_head;
 		return;
 	}
 
-	g_p_list_tail->next = p_task_node;
-	p_task_node->next = g_p_list_head;
-	g_p_list_tail = p_task_node;
+	s_p_list_tail->next = p_task_node;
+	p_task_node->next = s_p_list_head;
+	s_p_list_tail = p_task_node;
 	return;
 }
 
