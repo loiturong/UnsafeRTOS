@@ -29,24 +29,8 @@
 static inline uintptr_t *task__init_context(uintptr_t *st, uintptr_t *p_task_entry);
 
 /* -------- Function:      Public API           -------- */
-task_handle_t task_create(
-	uintptr_t *p_array_stack, 
-	size_t stack_size, 
-	uintptr_t *p_task_entry
-)
-{
-	struct task_control_block_t *p_task = kalloc(sizeof(struct task_control_block_t));
-	p_task->task_st = stack_create(p_array_stack, stack_size);
-	p_task->task_st = task__init_context(p_task->task_st, p_task_entry);
-	p_task->status = RUNNING;
-	
-	scheduler_register_task(p_task);
-
-	return (task_handle_t)p_task;
-}
-
-task_handle_t task_create_static(
-	kernel_block_t *p_kernel_block,
+void task_create_static(
+	kernel_handle_t *p_kernel_block,
 	uintptr_t *p_array_stack, 
 	size_t stack_size, 
 	uintptr_t *p_task_entry
@@ -65,7 +49,7 @@ task_handle_t task_create_static(
 	
 	scheduler_register_task_static(p_task, p_kernel_block);
 
-	return (task_handle_t)p_task;
+	return;
 }
 
 /* -------- Function: Public Internal API       -------- */

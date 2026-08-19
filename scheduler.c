@@ -19,10 +19,10 @@
 /* -------- 		  Define             	-------- */
 
 /* -------- 		  Types             	-------- */
-struct {
-	node_t *p_head;
-	node_t *p_tail;
-} list_t;
+struct list {
+	node_t *head;
+	node_t *tail;
+};
 
 /* -------- Objects:     Global Object          -------- */
 node_t *g_p_task_current;
@@ -31,6 +31,9 @@ node_t *g_p_task_next;
 /* -------- Objects:     Static Obejct          -------- */
 node_t *s_p_list_head;
 node_t *s_p_list_tail;
+
+struct list *s_p_wait_list;
+uint32_t s_delta = 0;
 
 /* -------- Function:   Static Function         -------- */
 
@@ -45,26 +48,9 @@ int scheduler_pick_new_task(void)
 	return 1;
 }
 
-void scheduler_register_task(struct task_control_block_t *p_task)
-{
-	node_t *p_task_node = kalloc(sizeof(node_t));
-	p_task_node->p_tcb = p_task;
-	
-	if(s_p_list_head == NULL) {
-		s_p_list_head = p_task_node;
-		s_p_list_tail = s_p_list_head;
-		return;
-	}
-
-	s_p_list_tail->next = p_task_node;
-	p_task_node->next = s_p_list_head;
-	s_p_list_tail = p_task_node;
-	return;
-}
-
 void scheduler_register_task_static(
 		struct task_control_block_t *p_task,
-		kernel_block_t *p_kernel_block)
+		kernel_handle_t *p_kernel_block)
 {
 	_Static_assert(
 		sizeof(node_t) <= SCHEDULER_BLOCK_SIZE, 
