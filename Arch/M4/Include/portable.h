@@ -9,6 +9,8 @@
 #ifndef portable_H
 #define portable_H
 
-void sys_call(void);
+#define SYS_CALL(index)		do { \
+		__asm volatile ("svc %[input]" :: [input] "i" (index) :); \
+	} while(0)
 
 #endif /* portable_H */

@@ -36,10 +36,6 @@ node_t *g_p_task_next;
 /* -------- Function:   Static Function         -------- */
 
 /* -------- Function:      Public API           -------- */
-void kernel_start(void)
-{
-	sys_call();
-}
 
 /* -------- Function: Public Internal API       -------- */
 int scheduler_pick_new_task(void)

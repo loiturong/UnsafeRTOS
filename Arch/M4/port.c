@@ -6,9 +6,6 @@
  * @License : GNU GENERAL PUBLIC LICENSE
  */
 
-#include "portable.h"
+#include <stdint.h>
 
-void sys_call()
-{
-	__asm volatile("svc 0\n");
-}
+#include "portable.h"

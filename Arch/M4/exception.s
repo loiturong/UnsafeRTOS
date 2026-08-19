@@ -1,27 +1,49 @@
 .syntax unified
 /* TODO: Adding task state indicating the use of hardware floating point in context swithcing */
 
+.section .text.exceptions
+
 .global SVCall_Handler
 .type SVCall_Handler, %function
-SVCall_Handler:
-	/* Save kernel context, don't know if need this yet */
-	// push {R4-R11}
-	
-	ldr r0, =g_p_first_task	// pointer to first task control block 
-	ldr r0, [r0]		// dereference pointer to tasklist (which is still a pointer) 
-	ldr r0, [r0]		// current stack pointer is now the first member of tasklist
-	add r0, 0x20		// 8 * 4 = 32 = 0x20
-	msr psp, r0
 
-    	orr lr, lr, 0x0D
+SVCall_Handler:
+	and r0, lr, 0x04
+	cmp r0, 0x04
+	bne get_msp_arg
+
+// Load Stack
+	mrs r1, psp
+	b exec
+get_msp_arg:
+	mrs r1, msp
+
+exec:
+	ldr r1, [r1, 0x18]	// PC after svc call
+	sub r1, 0x02
+	ldrh r1, [r1]		// the SVC instruction
+	and r1, r1, 0xFF	// syscall number
+
+	ldr r0, =syscall_table
+	lsl r1, r1, 0x02
+	ldr r0, [r0, r1]
+
+	cmp r1, 0x00		// KERNEL_START code
+	beq kernel_start_code
+
+	/* Save kernel context, don't know if need this yet */
+	push {r4-r11, lr}
+	blx r0
+	pop {r4-r11, lr}
 	bx lr
+
+kernel_start_code:
+	bx  r0
 
 /* literal pool */
 	.balign 4
-.svcall_literal_pool:
+.literal_pool_svcall:
 	.ltorg
 
-.section .text.exceptions
 .global PendSV_Handler
 .type PendSV_Handler, %function
 /* When PendSV is servered, we are always in the state of tail-chaining
@@ -49,15 +71,16 @@ PendSV_Handler:
 	str r10, [r0, 0x08]
 	str r11, [r0, 0x04]
 	
-	ldr r1, =g_p_prev_task	// pointer to tasklist 
-	ldr r1, [r1]		// dereference pointer to tasklist (which is still a pointer) 
-	str r0, [r1]		// current stack pointer is now the first member of tasklist
-	
+	ldr r0, =g_p_task_current	// pointer to node_t
+	ldr r0, [r0]			// node_t
+	ldr r0, [r0]			// node_t->p_tcb
+	ldr r0, [r0]			// p_tcb->task_st
 
 	/* Switch to new task */
-	ldr r0, =g_p_curr_task	// pointer to tasklist 
-	ldr r0, [r0]		// dereference pointer to tasklist (which is still a pointer) 
-	ldr r0, [r0]		// current stack pointer is now the first member of tasklist
+	ldr r0, =g_p_task_next		// pointer to node_t
+	ldr r0, [r0]			// node_t
+	ldr r0, [r0]			// node_t->p_tcb
+	ldr r0, [r0]			// p_tcb->task_st
 
 	/* "restore" context of new task */
 	ldr r11, [r0, 0x04]
@@ -77,6 +100,6 @@ PendSV_Handler:
 
 /* literal pool */
 	.balign 4
-.pendsv_literal_pool:
+.literal_pool_pendsv:
 	.ltorg
 

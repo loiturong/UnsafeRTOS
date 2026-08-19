@@ -8,9 +8,11 @@ add_library(${PROJECT_NAME} STATIC
     scheduler.c
     stack.c
     task.c
+    syscall.c
     Arch/${ARCH}/port.c
     Arch/${ARCH}/exception.c
     Arch/${ARCH}/exception.s
+    Arch/${ARCH}/syscall.s
 )
 
 target_include_directories(${PROJECT_NAME}
