@@ -16,6 +16,7 @@
 #include <stddef.h>
 
 /* -------- Include:   Public API Include       -------- */
+#include "syscall.h"
 
 /* -------- Include: Kernel Modules Include     -------- */
 
@@ -23,6 +24,9 @@
 #define WORD_SIZE(x)			(x * 4)
 #define TASK_CONTROL_BLOCK_SIZE		WORD_SIZE(4)
 #define SCHEDULER_BLOCK_SIZE		WORD_SIZE(4)
+
+#define KERNEL_START()		do { SYS_CALL(KERNEL_START); while(1); } while(0)
+#define TASK_YIELD()		SYS_CALL(TASK_YIELD)
 
 /* -------- 		  Types             	-------- */
 typedef struct task_control_block_t* task_handle_t;
@@ -42,7 +46,6 @@ typedef struct {
 /* -------- Function: Public Internal API       -------- */
 void task_create_static(kernel_handle_t *p_task_block, uintptr_t *p_array_stack, 
 		size_t stack_size, uintptr_t *p_task_entry);
-void kernel_start(void);
 
 /* -------- Function: Static Implementation     -------- */
 
