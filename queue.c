@@ -13,7 +13,7 @@
 /* -------- Include:   Public API Include       -------- */
 
 /* -------- Include: Kernel Modules Include     -------- */
-#include <queue.h>
+#include "queue.h"
 #include "heap.h"
 
 /* -------- 		  Define             	-------- */
@@ -36,22 +36,22 @@ queue_t *queue_init_from_array(uintptr_t *p_array, size_t size)
 	queue_t *p_queue = kalloc(sizeof(queue_t));
 	p_queue->qarray = p_array;
 	p_queue->size = size;
-	p_queue->head = p_array[0];
-	p_queue->tail = p_array[0];
+	p_queue->head = p_array;
+	p_queue->tail = p_array;
 
 	return p_queue;
 }
 
 void queue_push(queue_t *p_queue, uintptr_t item)
 {
-	if (!p_queue__is_full(p_queue))
+	if (!queue__is_full(p_queue))
 		*(p_queue->tail++) = item;
 }
 
 uintptr_t queue_pop(queue_t *p_queue)
 {
 	uintptr_t item = 0;
-	if (!p_queue__is_empty(p_queue))
+	if (!queue__is_empty(p_queue))
 		item = *(p_queue->head++);
 	return item;
 }
@@ -65,6 +65,6 @@ int queue__is_empty(queue_t *p_queue)
 int queue__is_full(queue_t *p_queue)
 {
 	return (((p_queue->tail + 1) == p_queue->head) ||
-	((p_queue->tail - p_queue->head) == p_queue->size)) ? 1 : 0;
+	((size_t)(p_queue->tail - p_queue->head) == p_queue->size)) ? 1 : 0;
 }
 

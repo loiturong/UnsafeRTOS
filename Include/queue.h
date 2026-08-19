@@ -34,7 +34,9 @@ typedef struct {
 /* -------- Function:      Public API           -------- */
 
 /* -------- Function: Public Internal API       -------- */
-queue_t *queue_init_from_array(uintptr_t *p_array, size_t size)
+queue_t *queue_init_from_array(uintptr_t *p_array, size_t size);
+void queue_push(queue_t *p_queue, uintptr_t item);
+uintptr_t queue_pop(queue_t *p_queue);
 
 /* -------- Function: Static Implementation     -------- */
 
