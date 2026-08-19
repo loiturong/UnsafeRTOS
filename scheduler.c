@@ -72,5 +72,29 @@ void scheduler_register_task(struct task_control_block_t *p_task)
 	return;
 }
 
+void scheduler_register_task_static(
+		struct task_control_block_t *p_task,
+		kernel_block_t *p_kernel_block)
+{
+	_Static_assert(
+		sizeof(node_t) <= SCHEDULER_BLOCK_SIZE, 
+		"Space for TaskControlBlock is too small");
+
+	node_t *p_task_node = (node_t *)p_kernel_block->p_scheduler;
+
+	p_task_node->p_tcb = p_task;
+	
+	if(g_p_list_head == NULL) {
+		g_p_list_head = p_task_node;
+		g_p_list_tail = g_p_list_head;
+		return;
+	}
+
+	g_p_list_tail->next = p_task_node;
+	p_task_node->next = g_p_list_head;
+	g_p_list_tail = p_task_node;
+	return;
+}
+
 /* -------- Function: Static Implementation     -------- */
 

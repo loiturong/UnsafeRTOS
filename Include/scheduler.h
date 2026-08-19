@@ -17,6 +17,8 @@
 
 /* -------- Include: Kernel Modules Include     -------- */
 void scheduler_register_task(struct task_control_block_t *p_task);
+void scheduler_register_task_static(struct task_control_block_t *p_task, 
+		kernel_block_t *p_kernel_block);
 int scheduler_pick_new_task(void);
 
 /* -------- 		  Types             	-------- */

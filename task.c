@@ -44,6 +44,30 @@ task_handle_t task_create(
 
 	return (task_handle_t)p_task;
 }
+
+task_handle_t task_create_static(
+	kernel_block_t *p_kernel_block,
+	uintptr_t *p_array_stack, 
+	size_t stack_size, 
+	uintptr_t *p_task_entry
+)
+{
+	_Static_assert(
+		sizeof(struct task_control_block_t) <= TASK_CONTROL_BLOCK_SIZE, 
+		"Space for TaskControlBlock is too small");
+
+	struct task_control_block_t *p_task = 
+		(struct task_control_block_t *)p_kernel_block->p_task_control;
+
+	p_task->task_st = stack_create(p_array_stack, stack_size);
+	p_task->task_st = task__init_context(p_task->task_st, p_task_entry);
+	p_task->status = RUNNING;
+	
+	scheduler_register_task_static(p_task, p_kernel_block);
+
+	return (task_handle_t)p_task;
+}
+
 /* -------- Function: Public Internal API       -------- */
 
 /* -------- Function: Static Implementation     -------- */
