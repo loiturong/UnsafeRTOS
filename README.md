@@ -4,14 +4,41 @@ Simple RTOS kernel with no dependecies.
 
 ## Goal
 
-Understand how RTOS works — scheduler, context switching, interrupts.
+Understand how RTOS works.
+
+## Project Structure
+```sh
+UnsafeRTOS-Kernel
+├── Arch
+│   └── M4
+│       ├── Include
+│       ├── exception.s
+│       ├── port.c
+│       └── syscall.s
+├── CMakeLists.txt
+├── Include
+│   ├── heap.h
+│   ├── kernel.h
+│   ├── queue.h
+│   ├── scheduler.h
+│   ├── stack.h
+│   └── task.h
+├── LICENSE
+├── README.md
+├── heap.c
+├── kernel.c
+├── queue.c
+├── scheduler.c
+├── stack.c
+└── task.c
+```
 
 ## Usage
 
 This project is provided with a [CMakeLists.txt](./CMakeLists.txt), which provides a
 static library. 
 
-Kernel provide its public api via: [Include/rtos_kernel.h](./Include/rtos_kernel.h)
+Kernel provide its public api via: [Include/kernel.h](./Include/kernel.h)
 
 ## Programming References
 
@@ -23,23 +50,71 @@ Technical Documentations:
 
 Design Consideration:
 - FreeRTOS Kernel Source
-- SuperTinyKernel RTOS (Idea of fixed size free list)
-
-## Requirements for Application
-
-Application must setup its environment with:
-- Board specific Vector Table
-- UnsafeRTOS uses SysTick, PendSV, and SVCall for its operation, so Application should not implement this
-- UnsafeRTOS implement a memory management, Application must provide a pointer to where heap can start operate (via linker)
+- SuperTinyKernel RTOS Source
 
 ## About Memory Management
 
-Kernel implement a fixed size freelist allocator for minimal overhead. 
-A size of 128 bytes (32 words), and HEAP size of 8KB as heap default configuration.
-Any data structure occupies over the config size should use static allocation instead.
+Kernel now implemented with zero dynamic allocation task create.
+
+## Example usage
+create task with static allocation.
+```c
+#include <UnsafeRTOS_Kernel/Include/kernel.h>
+
+/* Task A */
+static kernel_handle_t task_a_block;
+static char task_a_stack[256 * 4];
+static uint32_t counter_a = 0;
+void task_a(void) {
+	for(;;) { counter_a++; }
+}
+
+/* Task B */
+static kernel_handle_t task_b_block;
+static char task_b_stack[256 * 4];
+static uint32_t counter_b = 0;
+void task_b(void) {
+	for(;;) { counter_b++; }
+}
+
+void main()
+{
+    BoardSetup();
+	ExceptionSetup();
+	uint32_t ticks =  BOARD_FREQ * 1 / 1000;
+	SysTick_Config(ticks);
+	
+	task_create_static(&task_a_block, (uintptr_t *)task_a_stack, 32 * 4, (void *)task_a);
+	task_create_static(&task_b_block, (uintptr_t *)task_b_stack, 32 * 4, (void *)task_b);
+    
+    EnableSysTickINT();
+    EnableInt();
+
+	kernel_start();     // Syscall
+	while(1);
+}
+
+```
+
+Kernel tested design (Cortex-M4 - ARMv7M):
+
+| Exception | Priority |
+|---|---|
+| Reset | -3 (fixed) |
+| Hardfault | -2 (fixed) |
+| Non-Masked | -1 (fixed) |
+| MemoryManagement | 0 |
+| BusFault | 1 |
+| UsageFault | 2 |
+| DebugMonitor | 3 |
+| SVCall | 4 |
+| PendSV | 0xFF (Refers to Manufacture's prior_bit or use CMSIS) |
+| SysTick | 0xFF |
+| EXTI | 0xFE (no interrupt tested yet) |
+
 
 ## Status
-Early stage.
+Suspended (task suspend).
 
 Testing on emulator.
 
