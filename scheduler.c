@@ -41,11 +41,6 @@ node_t *g_p_task_next;
 int scheduler_pick_new_task(void)
 {
 
-	while((g_p_task_next->p_tcb->status != RUNNING)) {
-		g_p_task_current = g_p_task_next;
-		g_p_task_next = g_p_task_next->next;
-	}
-
 	g_p_task_current = g_p_task_next;
 	g_p_task_next = g_p_task_next->next;
 	return 1;
@@ -83,6 +78,8 @@ void scheduler_register_task_static(
 	if(g_p_list_head == NULL) {
 		g_p_list_head = p_task_node;
 		g_p_list_tail = g_p_list_head;
+		g_p_task_current = g_p_list_head;
+		g_p_task_next = g_p_list_head;
 		return;
 	}
 
