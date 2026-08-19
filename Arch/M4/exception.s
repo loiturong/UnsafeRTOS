@@ -64,16 +64,16 @@ PendSV_Handler:
 	str r10, [r0, 0x08]
 	str r11, [r0, 0x04]
 	
-	ldr r0, =g_p_task_current	// pointer to node_t
-	ldr r0, [r0]			// node_t
-	ldr r0, [r0]			// node_t->p_tcb
-	ldr r0, [r0]			// p_tcb->task_st
+	ldr r1, =g_p_task_current	// pointer to node_t
+	ldr r1, [r1]			// node_t
+	ldr r1, [r1]			// node_t->p_tcb
+	str r0, [r1]			// p_tcb->task_st
 
 	/* Switch to new task */
-	ldr r0, =g_p_task_next		// pointer to node_t
-	ldr r0, [r0]			// node_t
-	ldr r0, [r0]			// node_t->p_tcb
-	ldr r0, [r0]			// p_tcb->task_st
+	ldr r1, =g_p_task_next		// pointer to node_t
+	ldr r1, [r1]			// node_t
+	ldr r1, [r1]			// node_t->p_tcb
+	ldr r0, [r1]			// p_tcb->task_st
 
 	/* "restore" context of new task */
 	ldr r11, [r0, 0x04]
