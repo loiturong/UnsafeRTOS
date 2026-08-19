@@ -11,10 +11,9 @@
  * pop its r4-r11 frame, waiting for PendSV to "save" them again.
  */
 syscall_kernel_load_first_task:
-	ldr r0, =g_p_task_current	// pointer to node_t
-	ldr r0, [r0]			// node_t
-	ldr r0, [r0]			// node_t->p_tcb
-	ldr r0, [r0]			// p_tcb->task_st
+	ldr r1, =g_p_task_current	// pointer to node_t
+	ldr r1, [r1]			// node_t
+	ldr r0, [r1]			// node_t->tcb (first member is already stack pointer)
 
 	ldr r11, [r0, 0x04]
 	ldr r10, [r0, 0x08]

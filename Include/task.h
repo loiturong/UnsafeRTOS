@@ -25,9 +25,8 @@ typedef enum {
 
 struct task_control_block_t {
 	uintptr_t *task_st;
-	struct task_control_block_t *next;
 	task_status_t status; 
-	uint32_t tick_delayed;
+	uint32_t tdelay;
 };
 
 /* -------- Objects:     Global Object          -------- */

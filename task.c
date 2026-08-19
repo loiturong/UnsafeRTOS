@@ -40,14 +40,13 @@ void task_create_static(
 		sizeof(struct task_control_block_t) <= TASK_CONTROL_BLOCK_SIZE, 
 		"Space for TaskControlBlock is too small");
 
-	struct task_control_block_t *p_task = 
-		(struct task_control_block_t *)p_kernel_block->p_task_control;
+	struct task_control_block_t *p_task = (struct task_control_block_t *)p_kernel_block;
 
 	p_task->task_st = stack_create(p_array_stack, stack_size);
 	p_task->task_st = task__init_context(p_task->task_st, p_task_entry);
 	p_task->status = RUNNING;
 	
-	scheduler_register_task_static(p_task, p_kernel_block);
+	scheduler_register_task_static(p_kernel_block);
 
 	return;
 }

@@ -19,7 +19,7 @@
 /* -------- 		  Define             	-------- */
 
 /* -------- 		  Types             	-------- */
-struct list {
+struct wait_list {
 	node_t *head;
 	node_t *tail;
 };
@@ -32,10 +32,11 @@ node_t *g_p_task_next;
 node_t *s_p_list_head;
 node_t *s_p_list_tail;
 
-struct list *s_p_wait_list;
-uint32_t s_delta = 0;
+struct wait_list *s_p_wait_list;
 
 /* -------- Function:   Static Function         -------- */
+// static void waitlist__create(node_t *head);
+// static void waitlist__insert(node_t *item, uint32_t ticks);
 
 /* -------- Function:      Public API           -------- */
 
@@ -49,17 +50,13 @@ int scheduler_pick_new_task(void)
 }
 
 void scheduler_register_task_static(
-		struct task_control_block_t *p_task,
 		kernel_handle_t *p_kernel_block)
 {
 	_Static_assert(
-		sizeof(node_t) <= SCHEDULER_BLOCK_SIZE, 
-		"Space for TaskControlBlock is too small");
+		sizeof(node_t) <= (KERNEL_BLOCK_SIZE), 
+		"Space for Scheduler + TaskControlBlock is not big enough");
 
-	node_t *p_task_node = (node_t *)p_kernel_block->p_scheduler;
-
-	p_task_node->p_tcb = p_task;
-	
+	node_t *p_task_node = (node_t *)p_kernel_block;
 	if(s_p_list_head == NULL) {
 		s_p_list_head = p_task_node;
 		s_p_list_tail = s_p_list_head;
@@ -74,5 +71,54 @@ void scheduler_register_task_static(
 	return;
 }
 
-/* -------- Function: Static Implementation     -------- */
+/*
+void scheduler_add_delayed_task(
+		kernel_handle_t *p_tsk,
+		uint32_t ticks)
+{
+	node_t *p_node;
+	if (p_tsk == NULL)
+		p_node = g_p_task_current;
+	else
+		p_node = p_tsk->p_scheduler;
 
+	if (s_p_wait_list->head != NULL) {
+		waitlist__create(p_node);
+		return;
+	}
+	(void)p_node;
+}
+*/
+
+/* -------- Function: Static Implementation     -------- */
+/*
+inline void waitlist__create(node_t *head)
+{
+	s_p_wait_list->head = head;
+	s_p_wait_list->tail = head;
+}
+
+inline void waitlist__insert(node_t *item, uint32_t ticks)
+{
+	if(ticks >= s_p_wait_list->tail->p_tcb->tdelay) {
+		s_p_wait_list->tail->next = item;
+		item->p_tcb->tdelay = ticks - s_p_wait_list->tail->p_tcb->tdelay;
+		s_p_wait_list->tail = item;
+		item->next = NULL;
+		return;
+	}
+
+	node_t *node = s_p_wait_list->head;
+	while(node->p_tcb->tdelay < ticks) {
+		ticks -= node->p_tcb->tdelay;
+		node = node->next;
+	}
+	node = node->prev;
+
+	item->next = node->next;
+	node->next->prev = item;
+	item->prev = node;
+	node->next = item;
+	item->p_tcb->tdelay = ticks - node->p_tcb->tdelay;
+}
+*/
