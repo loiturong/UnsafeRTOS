@@ -34,14 +34,13 @@ struct list s_wait_list;
 
 /* -------- Function:   Static Function         -------- */
 static void waitlist__create(node_t *head);
-// static void waitlist__insert(node_t *item, uint32_t ticks);
+static void waitlist__insert(node_t *item, uint32_t ticks);
 
 /* -------- Function:      Public API           -------- */
 
 /* -------- Function: Public Internal API       -------- */
 int scheduler_pick_new_task(void)
 {
-
 	g_p_task_current = g_p_task_next;
 	g_p_task_next = g_p_task_next->next;
 	return 1;
@@ -80,12 +79,12 @@ void scheduler_delayed_task(process_control_block_t *p_tsk, uint32_t ticks)
 {
 	node_t *p_node = (p_tsk == NULL) ? g_p_task_current : (node_t *)p_tsk;
 
-	if (s_wait_list.head != NULL) {
+	if (s_wait_list.head == NULL) {
 		waitlist__create(p_node);
+		s_wait_list.tail->tcb.delayed = ticks;
 		return;
 	}
-	(void)p_node;
-	(void)ticks;
+	waitlist__insert(p_node, ticks);
 }
 
 /* -------- Function: Static Implementation     -------- */
@@ -93,30 +92,44 @@ inline void waitlist__create(node_t *head)
 {
 	s_wait_list.head = head;
 	s_wait_list.tail = head;
+	s_wait_list.head->next = s_wait_list.tail;
+	s_wait_list.tail->prev = s_wait_list.head;
 }
 
-/*
 inline void waitlist__insert(node_t *item, uint32_t ticks)
 {
-	if(ticks >= s_p_wait_list->tail->p_tcb->tdelay) {
-		s_p_wait_list->tail->next = item;
-		item->p_tcb->tdelay = ticks - s_p_wait_list->tail->p_tcb->tdelay;
-		s_p_wait_list->tail = item;
-		item->next = NULL;
+	node_t *index = s_wait_list.head;
+	while ((index != s_wait_list.tail) && (ticks > index->tcb.delayed)) {
+		ticks -= index->tcb.delayed;
+		index = index->next;
+	}
+
+	if (index == s_wait_list.tail) {
+		if (ticks >= s_wait_list.tail->tcb.delayed) {
+			item->tcb.delayed = ticks - s_wait_list.tail->tcb.delayed;
+			item->prev = s_wait_list.tail;
+			item->next = s_wait_list.head;
+
+			s_wait_list.tail->next = item;
+			s_wait_list.head->prev = item;
+		} else {
+			item->tcb.delayed = ticks;
+			item->prev = s_wait_list.tail->prev;
+			item->next = s_wait_list.tail;
+			
+			s_wait_list.tail->prev->next = item;
+			s_wait_list.head->prev = item;
+		}
 		return;
 	}
 
-	node_t *node = s_p_wait_list->head;
-	while(node->p_tcb->tdelay < ticks) {
-		ticks -= node->p_tcb->tdelay;
-		node = node->next;
-	}
-	node = node->prev;
+	item->tcb.delayed = ticks + index->prev->tcb.delayed;
+	item->prev = index->prev;
+	item->next = index;
+	
+	index->prev->next = item;
+	index->prev = item;
 
-	item->next = node->next;
-	node->next->prev = item;
-	item->prev = node;
-	node->next = item;
-	item->p_tcb->tdelay = ticks - node->p_tcb->tdelay;
+	return;
 }
-*/
+
