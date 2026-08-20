@@ -17,7 +17,7 @@
 #include "task.h"
 
 /* -------- Include: Kernel Modules Include     -------- */
-void scheduler_register_task_static(process_control_block_t *p_kernel_block);
+void scheduler_register_task_static(process_control_block_t *p_process_block);
 int scheduler_pick_new_task(void);
 
 /* -------- 		  Types             	-------- */

@@ -19,7 +19,7 @@
 /* -------- 		  Define             	-------- */
 
 /* -------- 		  Types             	-------- */
-struct wait_list {
+struct list {
 	node_t *head;
 	node_t *tail;
 };
@@ -32,7 +32,8 @@ node_t *g_p_task_next;
 node_t *s_p_list_head;
 node_t *s_p_list_tail;
 
-struct wait_list *s_p_wait_list;
+struct list *s_p_task_list;
+struct list *s_p_wait_list;
 
 /* -------- Function:   Static Function         -------- */
 // static void waitlist__create(node_t *head);
@@ -50,23 +51,29 @@ int scheduler_pick_new_task(void)
 }
 
 void scheduler_register_task_static(
-		process_control_block_t *p_kernel_block)
+		process_control_block_t *p_process_block)
 {
 	_Static_assert(
 		sizeof(node_t) <= (PROCESS_BLOCK_SIZE), 
 		"Space for Scheduler + TaskControlBlock is not big enough");
 
-	node_t *p_task_node = (node_t *)p_kernel_block;
+	node_t *p_task_node = (node_t *)p_process_block;
 	if(s_p_list_head == NULL) {
 		s_p_list_head = p_task_node;
 		s_p_list_tail = s_p_list_head;
 		g_p_task_current = s_p_list_head;
 		g_p_task_next = s_p_list_head;
+
+		s_p_list_head->prev = s_p_list_tail;
+		s_p_list_tail->next = s_p_list_head;
 		return;
 	}
 
 	s_p_list_tail->next = p_task_node;
+	p_task_node->prev = s_p_list_tail;
 	p_task_node->next = s_p_list_head;
+	s_p_list_head->prev = p_task_node;
+
 	s_p_list_tail = p_task_node;
 	return;
 }
