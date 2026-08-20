@@ -20,7 +20,9 @@
 /* -------- 		  Types             	-------- */
 typedef enum {
 	RUNNING 	= 1,
-	DONE		= 2,
+	WAIT		= 2,
+	SUSPENDED	= 3,
+	DONE		= 4,
 } task_status_t;
 
 struct task_control_block_t {

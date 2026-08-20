@@ -33,16 +33,22 @@ struct list s_task_list;
 struct list s_wait_list;
 
 /* -------- Function:   Static Function         -------- */
+static void scheduler__circle_new_task(void);
+static void scheduler__update_wait_list(void);
+
+static void tasklist__remove(node_t *p_node);
+
 static void waitlist__create(node_t *head);
 static void waitlist__insert(node_t *item, uint32_t ticks);
+static node_t *waitlist__remove(void);
 
 /* -------- Function:      Public API           -------- */
 
 /* -------- Function: Public Internal API       -------- */
 int scheduler_pick_new_task(void)
 {
-	g_p_task_current = g_p_task_next;
-	g_p_task_next = g_p_task_next->next;
+	scheduler__update_wait_list();
+	scheduler__circle_new_task();
 	return 1;
 }
 
@@ -78,6 +84,8 @@ void scheduler_register_task_static(
 void scheduler_delayed_task(process_control_block_t *p_tsk, uint32_t ticks)
 {
 	node_t *p_node = (p_tsk == NULL) ? g_p_task_current : (node_t *)p_tsk;
+	// p_node->tcb.status = WAIT;
+	tasklist__remove(p_node);
 
 	if (s_wait_list.head == NULL) {
 		waitlist__create(p_node);
@@ -88,6 +96,13 @@ void scheduler_delayed_task(process_control_block_t *p_tsk, uint32_t ticks)
 }
 
 /* -------- Function: Static Implementation     -------- */
+inline void tasklist__remove(node_t *p_node)
+{
+	node_t *temp = p_node->prev;
+	p_node->next->prev = temp;
+	temp->next = p_node->next;
+}
+
 inline void waitlist__create(node_t *head)
 {
 	s_wait_list.head = head;
@@ -131,5 +146,36 @@ inline void waitlist__insert(node_t *item, uint32_t ticks)
 	index->prev = item;
 
 	return;
+}
+
+inline node_t *waitlist__remove(void)
+{
+	node_t *rn = s_wait_list.head;
+	s_wait_list.tail->next = s_wait_list.head->next;
+	s_wait_list.head->next->prev = s_wait_list.tail;
+	s_wait_list.head = s_wait_list.head->next;
+	return rn;
+}
+
+inline void scheduler__circle_new_task(void)
+{
+	g_p_task_current = g_p_task_next;
+	g_p_task_next = g_p_task_next->next;
+}
+
+inline void scheduler__update_wait_list(void)
+{
+	if (s_wait_list.head != NULL)
+		return;
+	if (s_wait_list.head->tcb.delayed > 0) {
+		--s_wait_list.head->tcb.delayed;
+		return;
+	}
+
+	while (s_wait_list.head->tcb.delayed == 0) {
+		node_t *tsk = waitlist__remove();
+		// tsk->tcb.status = RUNNING;
+		scheduler_register_task_static((process_control_block_t *)tsk);
+	}
 }
 
