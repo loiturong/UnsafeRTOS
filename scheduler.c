@@ -29,11 +29,11 @@ node_t *g_p_task_current;
 node_t *g_p_task_next;
 
 /* -------- Objects:     Static Obejct          -------- */
-struct list *s_p_task_list;
-struct list *s_p_wait_list;
+struct list s_task_list;
+struct list s_wait_list;
 
 /* -------- Function:   Static Function         -------- */
-// static void waitlist__create(node_t *head);
+static void waitlist__create(node_t *head);
 // static void waitlist__insert(node_t *item, uint32_t ticks);
 
 /* -------- Function:      Public API           -------- */
@@ -55,54 +55,47 @@ void scheduler_register_task_static(
 		"Space for Scheduler + TaskControlBlock is not big enough");
 
 	node_t *p_task_node = (node_t *)p_process_block;
-	if(s_p_task_list == NULL) {
-		s_p_task_list->head = p_task_node;
-		s_p_task_list->tail = p_task_node;
+	if(s_task_list.head == NULL) {
+		s_task_list.head = p_task_node;
+		s_task_list.tail = p_task_node;
 
-		g_p_task_current = s_p_task_list->head;
-		g_p_task_next = s_p_task_list->head;
+		g_p_task_current = s_task_list.head;
+		g_p_task_next = s_task_list.head;
 		
-		s_p_task_list->head->prev = s_p_task_list->tail;
-		s_p_task_list->tail->next = s_p_task_list->head;
+		s_task_list.head->prev = s_task_list.tail;
+		s_task_list.tail->next = s_task_list.head;
 		return;
 	}
 
-	s_p_task_list->tail->next = p_task_node;
-	s_p_task_list->head->prev = p_task_node;
-	p_task_node->prev = s_p_task_list->tail;
-	p_task_node->next = s_p_task_list->head;
+	s_task_list.tail->next = p_task_node;
+	s_task_list.head->prev = p_task_node;
+	p_task_node->prev = s_task_list.tail;
+	p_task_node->next = s_task_list.head;
 
-	s_p_task_list->tail = p_task_node;
+	s_task_list.tail = p_task_node;
 	return;
 }
 
-/*
-void scheduler_add_delayed_task(
-		process_control_block_t *p_tsk,
-		uint32_t ticks)
+void scheduler_delayed_task(process_control_block_t *p_tsk, uint32_t ticks)
 {
-	node_t *p_node;
-	if (p_tsk == NULL)
-		p_node = g_p_task_current;
-	else
-		p_node = p_tsk->p_scheduler;
+	node_t *p_node = (p_tsk == NULL) ? g_p_task_current : (node_t *)p_tsk;
 
-	if (s_p_wait_list->head != NULL) {
+	if (s_wait_list.head != NULL) {
 		waitlist__create(p_node);
 		return;
 	}
 	(void)p_node;
+	(void)ticks;
 }
-*/
 
 /* -------- Function: Static Implementation     -------- */
-/*
 inline void waitlist__create(node_t *head)
 {
-	s_p_wait_list->head = head;
-	s_p_wait_list->tail = head;
+	s_wait_list.head = head;
+	s_wait_list.tail = head;
 }
 
+/*
 inline void waitlist__insert(node_t *item, uint32_t ticks)
 {
 	if(ticks >= s_p_wait_list->tail->p_tcb->tdelay) {
