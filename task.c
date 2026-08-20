@@ -30,7 +30,7 @@ static inline uintptr_t *task__init_context(uintptr_t *st, uintptr_t *p_task_ent
 
 /* -------- Function:      Public API           -------- */
 void task_create_static(
-	kernel_handle_t *p_kernel_block,
+	process_control_block_t *p_kernel_block,
 	uintptr_t *p_array_stack, 
 	size_t stack_size, 
 	uintptr_t *p_task_entry

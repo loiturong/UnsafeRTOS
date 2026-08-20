@@ -50,10 +50,10 @@ int scheduler_pick_new_task(void)
 }
 
 void scheduler_register_task_static(
-		kernel_handle_t *p_kernel_block)
+		process_control_block_t *p_kernel_block)
 {
 	_Static_assert(
-		sizeof(node_t) <= (KERNEL_BLOCK_SIZE), 
+		sizeof(node_t) <= (PROCESS_BLOCK_SIZE), 
 		"Space for Scheduler + TaskControlBlock is not big enough");
 
 	node_t *p_task_node = (node_t *)p_kernel_block;
@@ -73,7 +73,7 @@ void scheduler_register_task_static(
 
 /*
 void scheduler_add_delayed_task(
-		kernel_handle_t *p_tsk,
+		process_control_block_t *p_tsk,
 		uint32_t ticks)
 {
 	node_t *p_node;

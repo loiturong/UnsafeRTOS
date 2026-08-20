@@ -22,13 +22,12 @@
 /* -------- 		  Define             	-------- */
 #define WORD_SIZE(x)			(x * 4)
 #define TASK_CONTROL_BLOCK_SIZE		WORD_SIZE(4)
-#define KERNEL_BLOCK_SIZE		TASK_CONTROL_BLOCK_SIZE + WORD_SIZE(4)
+#define PROCESS_BLOCK_SIZE		TASK_CONTROL_BLOCK_SIZE + WORD_SIZE(4)
 
 /* -------- 		  Types             	-------- */
-typedef struct task_control_block_t* task_handle_t;
 typedef struct {
-	uint8_t storage[KERNEL_BLOCK_SIZE];
-} __attribute__((aligned(sizeof(uintptr_t)))) kernel_handle_t;
+	uint8_t storage[PROCESS_BLOCK_SIZE];
+} __attribute__((aligned(sizeof(uintptr_t)))) process_control_block_t;
 
 /* -------- Objects:     Global Object          -------- */
 
@@ -37,9 +36,9 @@ typedef struct {
 /* -------- Function:   Static Function         -------- */
 
 /* -------- Function:      Public API           -------- */
-void task_create_static(kernel_handle_t *p_task_block, uintptr_t *p_array_stack, 
+void task_create_static(process_control_block_t *p_task_block, uintptr_t *p_array_stack, 
 		size_t stack_size, uintptr_t *p_task_entry);
-void scheduler_add_delayed_task(kernel_handle_t *p_tsk, uint32_t ticks);
+void scheduler_delayed_task(process_control_block_t *p_tsk, uint32_t ticks);
 
 // Syscall API
 void kernel_start(void);
