@@ -29,9 +29,6 @@ node_t *g_p_task_current;
 node_t *g_p_task_next;
 
 /* -------- Objects:     Static Obejct          -------- */
-node_t *s_p_list_head;
-node_t *s_p_list_tail;
-
 struct list *s_p_task_list;
 struct list *s_p_wait_list;
 
@@ -58,23 +55,24 @@ void scheduler_register_task_static(
 		"Space for Scheduler + TaskControlBlock is not big enough");
 
 	node_t *p_task_node = (node_t *)p_process_block;
-	if(s_p_list_head == NULL) {
-		s_p_list_head = p_task_node;
-		s_p_list_tail = s_p_list_head;
-		g_p_task_current = s_p_list_head;
-		g_p_task_next = s_p_list_head;
+	if(s_p_task_list == NULL) {
+		s_p_task_list->head = p_task_node;
+		s_p_task_list->tail = p_task_node;
 
-		s_p_list_head->prev = s_p_list_tail;
-		s_p_list_tail->next = s_p_list_head;
+		g_p_task_current = s_p_task_list->head;
+		g_p_task_next = s_p_task_list->head;
+		
+		s_p_task_list->head->prev = s_p_task_list->tail;
+		s_p_task_list->tail->next = s_p_task_list->head;
 		return;
 	}
 
-	s_p_list_tail->next = p_task_node;
-	p_task_node->prev = s_p_list_tail;
-	p_task_node->next = s_p_list_head;
-	s_p_list_head->prev = p_task_node;
+	s_p_task_list->tail->next = p_task_node;
+	s_p_task_list->head->prev = p_task_node;
+	p_task_node->prev = s_p_task_list->tail;
+	p_task_node->next = s_p_task_list->head;
 
-	s_p_list_tail = p_task_node;
+	s_p_task_list->tail = p_task_node;
 	return;
 }
 
