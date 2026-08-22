@@ -70,9 +70,10 @@ PendSV_Handler:
 
 
 	/* Switch to new task */
-	ldr r1, =g_p_task_next		// pointer to node_t
-	ldr r1, [r1]			// node_t->p_tcb
-	ldr r0, [r1]			// node_t->tcb (first member is already stack pointer)
+	ldr r1, =g_p_task_current	// pointer to node_t
+	ldr r1, [r1]			// node_t
+	ldr r1, [r1, 0x0C]		// node_t->next (node_t)
+	ldr r0, [r1]			// node_t->p_tcb (stack is the first member)
 
 	/* "restore" context of new task */
 	ldr r11, [r0, 0x04]
