@@ -20,6 +20,7 @@
 /* -------- 		  Types             	-------- */
 
 /* -------- Objects:     Global Object          -------- */
+int volatile g_wait_list_lock = 0;
 
 /* -------- Objects:     Static Obejct          -------- */
 
@@ -30,7 +31,10 @@ void kernel_start(void) { SYS_CALL(0x00); while(1); }
 void task_yield(void)	{ SYS_CALL(0x01); }
 void task_delay(process_control_block_t *p_tsk, uint32_t ticks)
 {
+	while (g_wait_list_lock == 1);
+	g_wait_list_lock = 1;
 	scheduler_delayed_task(p_tsk, ticks);
+	g_wait_list_lock = 0;
 	if (p_tsk == NULL)
 		task_yield();
 }

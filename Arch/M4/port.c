@@ -24,6 +24,7 @@ void scheduler_update_wait_list(void);
 /* -------- 		  Types             	-------- */
 
 /* -------- Objects:     Global Object          -------- */
+extern int volatile g_wait_list_lock;
 
 /* -------- Objects:     Static Obejct          -------- */
 
@@ -34,6 +35,9 @@ void scheduler_update_wait_list(void);
 /* -------- Function: Public Internal API       -------- */
 void SysTick_Handler(void)
 {
+	if ((g_wait_list_lock == 1))
+		return;
+
 	scheduler_update_wait_list();
 
 	// PendSV may be preempt by external interrupt
