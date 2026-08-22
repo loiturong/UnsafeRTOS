@@ -31,7 +31,7 @@ void task_yield(void)	{ SYS_CALL(0x01); }
 void task_delay(process_control_block_t *p_tsk, uint32_t ticks)
 {
 	scheduler_delayed_task(p_tsk, ticks);
-	if (tsk == NULL)
+	if (p_tsk == NULL)
 		task_yield();
 }
 
