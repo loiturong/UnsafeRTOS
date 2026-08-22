@@ -38,11 +38,11 @@ typedef struct {
 /* -------- Function:      Public API           -------- */
 void task_create_static(process_control_block_t *p_task_block, uintptr_t *p_array_stack, 
 		size_t stack_size, uintptr_t *p_task_entry);
-void scheduler_delayed_task(process_control_block_t *p_tsk, uint32_t ticks);
 
 // Syscall API
 void kernel_start(void);
 void task_yield(void);
+void task_delay(process_control_block_t *p_tsk, uint32_t ticks);
 
 /* -------- Function: Public Internal API       -------- */
 
