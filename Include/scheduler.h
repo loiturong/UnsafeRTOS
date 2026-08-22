@@ -18,6 +18,7 @@
 
 /* -------- Include: Kernel Modules Include     -------- */
 void scheduler_register_task_static(process_control_block_t *p_process_block);
+void scheduler_update_wait_list(void);
 int scheduler_pick_new_task(void);
 
 /* -------- 		  Types             	-------- */
@@ -29,7 +30,6 @@ typedef struct node_t {
 
 /* -------- Objects:     Global Object          -------- */
 extern node_t *g_p_task_current;
-extern node_t *g_p_task_next;
 
 /* -------- Objects:     Static Obejct          -------- */
 

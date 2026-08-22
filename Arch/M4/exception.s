@@ -64,15 +64,18 @@ PendSV_Handler:
 	str r10, [r0, 0x08]
 	str r11, [r0, 0x04]
 	
-	ldr r1, =g_p_task_current	// pointer to node_t
-	ldr r1, [r1]			// node_t
-	str r0, [r1]			// store node_t->tcb (first member is already stack pointer)
+	ldr r2, =g_p_task_current	// pointer to node_t current task pointer
 
+	ldr r1, [r2]			// node_t
+	str r0, [r1]			// store node_t->tcb (first member is already stack pointer)
+	
+	/* Update current task pointer */
+	ldr r1, [r2]			// node_t
+	ldr r0, [r1, 0x0C]		// node_t->next (node_t)
+	str r0, [r2]
 
 	/* Switch to new task */
-	ldr r1, =g_p_task_current	// pointer to node_t
-	ldr r1, [r1]			// node_t
-	ldr r1, [r1, 0x0C]		// node_t->next (node_t)
+	ldr r1, [r2]			// node_t
 	ldr r0, [r1]			// node_t->p_tcb (stack is the first member)
 
 	/* "restore" context of new task */

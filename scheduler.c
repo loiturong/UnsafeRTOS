@@ -26,16 +26,12 @@ struct list {
 
 /* -------- Objects:     Global Object          -------- */
 node_t *g_p_task_current;
-node_t *g_p_task_next;
 
 /* -------- Objects:     Static Obejct          -------- */
 struct list s_task_list;
 struct list s_wait_list;
 
 /* -------- Function:   Static Function         -------- */
-static void scheduler__circle_new_task(void);
-static void scheduler__update_wait_list(void);
-
 static void tasklist__remove(node_t *p_node);
 
 static void waitlist__create(node_t *head);
@@ -47,12 +43,28 @@ static node_t *waitlist__remove(void);
 /* -------- Function: Public Internal API       -------- */
 int scheduler_pick_new_task(void)
 {
-	scheduler__update_wait_list();
-	scheduler__circle_new_task();
+	if (g_p_task_current == g_p_task_current->next)
+		return 0;
 	return 1;
 }
 
-void scheduler_register_task_static(
+void scheduler_update_wait_list(void)
+{
+	if (s_wait_list.head == NULL)
+		return;
+	if (s_wait_list.head->tcb.delayed > 0) {
+		--s_wait_list.head->tcb.delayed;
+		return;
+	}
+
+	while (s_wait_list.head->tcb.delayed == 0) {
+		node_t *tsk = waitlist__remove();
+		// tsk->tcb.status = RUNNING;
+		scheduler_register_task_static((process_control_block_t *)tsk);
+	}
+}
+
+inline void scheduler_register_task_static(
 		process_control_block_t *p_process_block)
 {
 	_Static_assert(
@@ -65,7 +77,6 @@ void scheduler_register_task_static(
 		s_task_list.tail = p_task_node;
 
 		g_p_task_current = s_task_list.head;
-		g_p_task_next = s_task_list.head;
 		
 		s_task_list.head->prev = s_task_list.tail;
 		s_task_list.tail->next = s_task_list.head;
@@ -93,6 +104,8 @@ void scheduler_delayed_task(process_control_block_t *p_tsk, uint32_t ticks)
 		return;
 	}
 	waitlist__insert(p_node, ticks);
+
+	task_yield();
 }
 
 /* -------- Function: Static Implementation     -------- */
@@ -155,27 +168,5 @@ inline node_t *waitlist__remove(void)
 	s_wait_list.head->next->prev = s_wait_list.tail;
 	s_wait_list.head = s_wait_list.head->next;
 	return rn;
-}
-
-inline void scheduler__circle_new_task(void)
-{
-	g_p_task_current = g_p_task_next;
-	g_p_task_next = g_p_task_next->next;
-}
-
-inline void scheduler__update_wait_list(void)
-{
-	if (s_wait_list.head != NULL)
-		return;
-	if (s_wait_list.head->tcb.delayed > 0) {
-		--s_wait_list.head->tcb.delayed;
-		return;
-	}
-
-	while (s_wait_list.head->tcb.delayed == 0) {
-		node_t *tsk = waitlist__remove();
-		// tsk->tcb.status = RUNNING;
-		scheduler_register_task_static((process_control_block_t *)tsk);
-	}
 }
 
