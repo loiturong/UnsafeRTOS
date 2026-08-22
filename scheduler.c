@@ -41,14 +41,16 @@ static node_t *waitlist__remove(void);
 /* -------- Function:      Public API           -------- */
 
 /* -------- Function: Public Internal API       -------- */
-int scheduler_pick_new_task(void)
+inline int scheduler_pick_new_task(void)
 {
 	if (g_p_task_current == g_p_task_current->next)
 		return 0;
+	while (g_p_task_current->next->tcb.status != RUNNING)
+		g_p_task_current == g_p_task_current->next;
 	return 1;
 }
 
-void scheduler_update_wait_list(void)
+inline void scheduler_update_wait_list(void)
 {
 	if (s_wait_list.head == NULL)
 		return;
