@@ -26,7 +26,7 @@
 /* -------- Function:      Public API           -------- */
 
 /* -------- Function: Public Internal API       -------- */
-uintptr_t *stack_create(uintptr_t *p_array_head, size_t size)
+inline uintptr_t *stack_create(uintptr_t *p_array_head, size_t size)
 {
 	return p_array_head + size;
 }
