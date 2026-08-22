@@ -62,11 +62,14 @@ create task with static allocation.
 #include <UnsafeRTOS_Kernel/Include/kernel.h>
 
 /* Task A */
-static kernel_handle_t task_a_block;
-static char task_a_stack[256 * 4];
+static process_control_block_t task_a_block;
+char task_a_stack[256 * 4];
 static uint32_t counter_a = 0;
 void task_a(void) {
-	for(;;) { counter_a++; }
+	for(;;) { 
+		counter_a++;
+	    task_delay(NULL, 500);  // 1 Ticks = 1 MS
+	}
 }
 
 /* Task B */
@@ -74,7 +77,10 @@ static kernel_handle_t task_b_block;
 static char task_b_stack[256 * 4];
 static uint32_t counter_b = 0;
 void task_b(void) {
-	for(;;) { counter_b++; }
+	for(;;) { 
+        counter_b++;
+        task_delay(NULL, 750);
+    }
 }
 
 void main()
@@ -114,7 +120,9 @@ Kernel tested design (Cortex-M4 - ARMv7M):
 
 
 ## Status
-Suspended (task suspend).
+First view of Concurrency.
+- Multiple Task calling delay at the same time (all modifying task list and wait list)
+- SysTick preempted mid delay function (which also modifying task list)
 
 Testing on emulator.
 
