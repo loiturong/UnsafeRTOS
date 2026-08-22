@@ -39,3 +39,4 @@ syscall_kernel_load_first_task:
 syscall_table:
 	.word syscall_kernel_load_first_task
 	.word syscall_task_yield
+

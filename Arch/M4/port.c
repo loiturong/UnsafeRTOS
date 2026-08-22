@@ -11,6 +11,7 @@
 
 /* -------- Include:   Public API Include       -------- */
 int scheduler_pick_new_task(void);
+void scheduler_update_wait_list(void);
 
 /* -------- Include: Kernel Modules Include     -------- */
 #include "portable.h"
@@ -33,6 +34,8 @@ int scheduler_pick_new_task(void);
 /* -------- Function: Public Internal API       -------- */
 void SysTick_Handler(void)
 {
+	scheduler_update_wait_list();
+
 	// PendSV may be preempt by external interrupt
 	if ((*SCB_ICSR & SCB_ICSR_PENDSVSET_Msk) != 0)
 		return;
@@ -45,7 +48,6 @@ void syscall_task_yield(void)
 {
 	if (scheduler_pick_new_task())
 		SET_PENDSV_BIT();
-	return;
 }
 
 /* -------- Function: Static Implementation     -------- */

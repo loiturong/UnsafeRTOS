@@ -7,29 +7,29 @@
 .type SVCall_Handler, %function
 
 SVCall_Handler:
-	and r0, lr, 0x04
-	cmp r0, 0x04
+	push {r4, r5, lr}
+	and r4, lr, 0x04
+	cmp r4, 0x04
 	bne get_msp_arg
 
 // Load Stack
-	mrs r1, psp
+	mrs r5, psp
 	b exec
 get_msp_arg:
-	mrs r1, msp
+	mrs r5, msp
 
 exec:
-	ldr r1, [r1, 0x18]	// PC after svc call
-	sub r1, 0x02
-	ldrh r1, [r1]		// the SVC instruction
-	and r1, r1, 0xFF	// syscall number
+	ldr r5, [r5, 0x18]	// PC after svc call
+	sub r5, 0x02
+	ldrh r5, [r5]		// the SVC instruction
+	and r5, r5, 0xFF	// syscall number
 
-	ldr r0, =syscall_table
-	lsl r1, r1, 0x02
-	ldr r0, [r0, r1]
+	ldr r4, =syscall_table
+	lsl r5, r5, 0x02
+	ldr r4, [r4, r5]
 	
-	push {lr}
-	blx r0
-	pop {lr}
+	blx r4
+	pop {r4, r5, lr}
 	bx lr
 
 /* literal pool */
