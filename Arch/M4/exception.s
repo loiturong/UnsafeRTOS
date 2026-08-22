@@ -70,9 +70,9 @@ PendSV_Handler:
 	str r0, [r1]			// store node_t->tcb (first member is already stack pointer)
 	
 	/* Update current task pointer */
-	ldr r1, [r2]			// node_t
-	ldr r0, [r1, 0x0C]		// node_t->next (node_t)
-	str r0, [r2]
+	push {r0-r2, lr}
+	bl scheduler_pick_new_task	// Incase of 0 return, its means this function is not pick new task (handle latter)
+	pop {r0-r2, lr}
 
 	/* Switch to new task */
 	ldr r1, [r2]			// node_t

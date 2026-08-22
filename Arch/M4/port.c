@@ -39,15 +39,14 @@ void SysTick_Handler(void)
 	// PendSV may be preempt by external interrupt
 	if ((*SCB_ICSR & SCB_ICSR_PENDSVSET_Msk) != 0)
 		return;
-	if (scheduler_pick_new_task())
-		SET_PENDSV_BIT();
+	
+	SET_PENDSV_BIT();
 	return;
 }
 
 void syscall_task_yield(void)
 {
-	if (scheduler_pick_new_task())
-		SET_PENDSV_BIT();
+	SET_PENDSV_BIT();
 	return;
 }
 
